@@ -50,7 +50,7 @@ export function SettingsScreen() {
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-2">
         <button className="btn" onClick={() => nav('/more')} aria-label={t('common.back')}>←</button>
-        <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
+        <h1 className="text-3xl font-extrabold">{t('settings.title')}</h1>
       </div>
       <Choice<Lang> label={t('settings.language')} value={s.language} onChange={(language) => void saveSettings({ language })} options={[{ v: 'de', label: 'Deutsch' }, { v: 'en', label: 'English (US)' }]} />
       <Choice<Units> label={t('settings.units')} value={s.units} onChange={(units) => void saveSettings({ units })} options={[{ v: 'kg', label: 'kg' }, { v: 'lb', label: 'lb' }]} />

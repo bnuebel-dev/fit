@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
+import { Icon } from '../components/Icon'
 import { db } from '../db'
 import { computeHints } from '../lib/advisor/hints'
 import { HINT_ICON, hintText } from '../lib/advisor/hintText'
@@ -76,22 +77,22 @@ export function WorkoutHome() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t('workout.title')}</h1>
+      <h1 className="text-3xl font-extrabold">{t('workout.title')}</h1>
 
       {active && (
-        <Link to="/workout" className="card flex items-center justify-between border-accent p-4 text-accent">
-          <span className="font-medium">{t('workout.resume')}</span>
-          <span aria-hidden>▶</span>
+        <Link to="/workout" className="hero flex items-center justify-between">
+          <span className="font-bold">{t('workout.resume')}</span>
+          <Icon name="play" />
         </Link>
       )}
 
       {isNew && (
-        <section className="card flex flex-col gap-3 border-accent bg-accent/10 p-5" aria-label={t('home.welcomeTitle')}>
-          <div className="text-3xl" aria-hidden>👋</div>
-          <h2 className="text-lg font-semibold">{t('home.welcomeTitle')}</h2>
-          <p className="text-sm text-muted">{t('home.welcomeText')}</p>
-          <Link to="/advisor" className="btn btn-primary">{t('home.createPlan')}</Link>
-          <Link to="/more/knowledge" className="btn">{t('home.explore')}</Link>
+        <section className="hero flex flex-col gap-3" aria-label={t('home.welcomeTitle')}>
+          <Icon name="wave" size={32} />
+          <h2 className="text-2xl font-extrabold leading-tight">{t('home.welcomeTitle')}</h2>
+          <p className="text-sm text-white/85">{t('home.welcomeText')}</p>
+          <Link to="/advisor" className="btn !bg-white !bg-none !text-[#4b34e0] shadow-none">{t('home.createPlan')}</Link>
+          <Link to="/more/knowledge" className="btn !bg-white/15 !text-white">{t('home.explore')}</Link>
         </section>
       )}
 
@@ -110,17 +111,17 @@ export function WorkoutHome() {
       )}
 
       {todays && !active && (
-        <section className="card flex items-center gap-3 p-4" aria-label={t('home.today')}>
-          <span className="flex size-12 shrink-0 items-center justify-center rounded-full text-sm font-bold text-black" style={{ background: todays.color }}>{weekdayLabel(todays.weekday!, lang)}</span>
-          <div className="min-w-0 flex-1"><div className="text-xs font-semibold uppercase tracking-wide text-accent">{t('home.today')}</div><div className="truncate font-semibold">{todays.name}</div></div>
-          <button className="btn btn-primary" onClick={() => begin(todays)}>{t('home.startToday')}</button>
+        <section className="hero flex items-center gap-3" aria-label={t('home.today')}>
+          <span className="relative z-10 flex size-12 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-[#4b34e0]">{weekdayLabel(todays.weekday!, lang)}</span>
+          <div className="min-w-0 flex-1"><div className="text-xs font-bold uppercase tracking-widest text-white/80">{t('home.today')}</div><div className="truncate text-lg font-bold">{todays.name}</div></div>
+          <button className="btn !bg-white !bg-none !text-[#4b34e0] shadow-none" onClick={() => begin(todays)}>{t('home.startToday')}</button>
         </section>
       )}
 
       {tip && (
         <Link to="/advisor?tab=hints" className="card flex gap-3 p-4 text-sm" aria-label={t('home.tip')}>
-          <span aria-hidden>{HINT_ICON[tip.kind]}</span>
-          <span className="min-w-0 flex-1"><span className="mb-0.5 block text-xs font-semibold uppercase tracking-wide text-accent">{t('home.tip')}</span>{hintText(tip, t, hintName, units)}</span>
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent/12" aria-hidden>{HINT_ICON[tip.kind]}</span>
+          <span className="min-w-0 flex-1"><span className="mb-0.5 block text-xs font-bold uppercase tracking-widest text-accent">{t('home.tip')}</span>{hintText(tip, t, hintName, units)}</span>
         </Link>
       )}
 
@@ -129,7 +130,7 @@ export function WorkoutHome() {
         <Link to="/routine/new" className="btn">+ {t('workout.newRoutine')}</Link>
       </div>
 
-      <h2 className="mt-2 text-sm font-semibold uppercase tracking-wide text-muted">{t('workout.routines')}</h2>
+      {!isNew && <h2 className="section-title">{t('workout.routines')}</h2>}
       {routines && routines.length === 0 && !isNew && <p className="text-muted">{t('workout.noRoutines')}</p>}
       <ul className="flex flex-col gap-2">
         {routines?.map((r) => {
@@ -148,7 +149,7 @@ export function WorkoutHome() {
                   </span>
                 </span>
               </button>
-              <Link to={`/routine/${r.id}`} className="btn" aria-label={t('common.edit')}>✎</Link>
+              <Link to={`/routine/${r.id}`} className="btn !min-h-10 !px-3" aria-label={t('common.edit')}><Icon name="edit" size={18} /></Link>
             </li>
           )
         })}
@@ -156,16 +157,16 @@ export function WorkoutHome() {
 
       {!isNew && (
         <Link to="/advisor" className="card flex items-center gap-3 p-4">
-          <span className="text-2xl" aria-hidden>🧠</span>
-          <span className="flex-1"><span className="block font-medium">{t('home.planCardTitle')}</span><span className="text-xs text-muted">{t('home.planCardText')}</span></span>
-          <span className="text-muted" aria-hidden>›</span>
+          <span className="flex size-11 items-center justify-center rounded-2xl bg-accent/12 text-accent" aria-hidden><Icon name="spark" /></span>
+          <span className="flex-1"><span className="block font-semibold">{t('home.planCardTitle')}</span><span className="text-xs text-muted">{t('home.planCardText')}</span></span>
+          <Icon name="chevron" size={18} className="text-muted" />
         </Link>
       )}
 
-      <h2 className="mt-2 text-sm font-semibold uppercase tracking-wide text-muted">{t('home.quick')}</h2>
+      <h2 className="section-title">{t('home.quick')}</h2>
       <div className="grid grid-cols-3 gap-2">
-        {[['/more/knowledge', '📚', t('more.knowledge')], ['/more/exercises', '🏋️', t('more.exercises')], ['/more', '🧮', t('more.title')]].map(([to, icon, label]) => (
-          <Link key={to} to={to} className="card flex flex-col items-center gap-1 p-3 text-center text-sm"><span className="text-2xl" aria-hidden>{icon}</span>{label}</Link>
+        {([['/more/knowledge', 'book', t('more.knowledge')], ['/more/exercises', 'dumbbell', t('more.exercises')], ['/more', 'calc', t('more.title')]] as const).map(([to, icon, label]) => (
+          <Link key={to} to={to} className="card flex flex-col items-center gap-1 p-3 text-center text-sm"><span className="flex size-11 items-center justify-center rounded-2xl bg-accent/12 text-accent" aria-hidden><Icon name={icon} /></span>{label}</Link>
         ))}
       </div>
     </div>

@@ -25,7 +25,7 @@ export function History() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t('history.title')}</h1>
+      <h1 className="text-3xl font-extrabold">{t('history.title')}</h1>
       {data && data.length === 0 && <p className="text-muted">{t('history.empty')}</p>}
       <ul className="flex flex-col gap-2">
         {data?.map(({ w, s }) => (

@@ -1,6 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Icon } from '../components/Icon'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { db } from '../db'
 import { computeHints } from '../lib/advisor/hints'
@@ -26,10 +27,10 @@ export function Advisor() {
   const [seed, setSeed] = useState<string | null>(null)
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t('advisor.title')}</h1>
+      <h1 className="text-3xl font-extrabold">{t('advisor.title')}</h1>
       <div className="flex gap-2" role="tablist">
         {(['plan', 'hints', 'coach'] as Tab[]).map((x) => (
-          <button key={x} role="tab" aria-selected={tab === x} className={`btn flex-1 ${tab === x ? '!bg-accent !text-accent-fg' : ''}`} onClick={() => setTab(x)}>{t(`advisor.tabs.${x}`)}</button>
+          <button key={x} role="tab" aria-selected={tab === x} className={`btn flex-1 !min-h-10 ${tab === x ? 'btn-primary' : ''}`} onClick={() => setTab(x)}>{t(`advisor.tabs.${x}`)}</button>
         ))}
       </div>
       {tab === 'plan' && <PlanTab onRefine={(text) => { setSeed(text); setTab('coach') }} />}
@@ -62,11 +63,11 @@ function PlanTab({ onRefine }: { onRefine: (text: string) => void }) {
 
   if (step < 0 || !answers) {
     return (
-      <div className="card flex flex-col gap-4 p-5">
-        <div className="text-3xl" aria-hidden>🧠</div>
-        <h2 className="text-lg font-semibold">{t('wizard.title')}</h2>
-        <p className="text-sm text-muted">{t('wizard.intro')}</p>
-        <button className="btn btn-primary" onClick={start}>{t('wizard.start')}</button>
+      <div className="hero flex flex-col gap-4">
+        <Icon name="spark" size={32} />
+        <h2 className="text-2xl font-extrabold leading-tight">{t('wizard.title')}</h2>
+        <p className="text-sm text-white/85">{t('wizard.intro')}</p>
+        <button className="btn !bg-white !bg-none !text-[#4b34e0] shadow-none" onClick={start}>{t('wizard.start')}</button>
       </div>
     )
   }

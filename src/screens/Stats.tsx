@@ -48,7 +48,7 @@ export function Stats() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">{t('stats.title')}</h1>
+      <h1 className="text-3xl font-extrabold">{t('stats.title')}</h1>
       <div className="flex gap-2 overflow-x-auto" role="tablist">
         {PERIODS.map((p) => (
           <button key={p} role="tab" aria-selected={period === p} className={`chip shrink-0 !px-4 !py-2 text-sm ${period === p ? '!bg-accent !text-accent-fg' : ''}`} onClick={() => setPeriod(p)}>{t(`stats.${p}`)}</button>

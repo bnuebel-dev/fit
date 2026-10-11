@@ -246,7 +246,7 @@ function SummaryView({ summary, onClose }: { summary: Summary; onClose: () => vo
   const units = settings?.units ?? 'kg'
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">🎉 {t('workout.summary')}</h1>
+      <h1 className="text-3xl font-extrabold">🎉 {t('workout.summary')}</h1>
       <div className="grid grid-cols-3 gap-2 text-center">
         <Stat label={t('workout.duration')} value={formatDuration(summary.durationMs)} />
         <Stat label={t('common.sets')} value={String(summary.sets)} />

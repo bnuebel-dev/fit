@@ -1,18 +1,15 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Icon, type IconName } from './Icon'
 import { RestTimer } from './RestTimer'
 
-const Icon = ({ d }: { d: string }) => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d={d} /></svg>
-)
-
 const TABS = [
-  { to: '/', key: 'workout', icon: 'M8 5v14l11-7z' },
-  { to: '/advisor', key: 'advisor', icon: 'M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4zM18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z' },
-  { to: '/stats', key: 'stats', icon: 'M4 20V10M10 20V4M16 20v-8M22 20H2' },
-  { to: '/history', key: 'history', icon: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M12 7v5l3 2' },
-  { to: '/more', key: 'more', icon: 'M4 6h16M4 12h16M4 18h16' },
-] as const
+  { to: '/', key: 'workout', icon: 'play' },
+  { to: '/advisor', key: 'advisor', icon: 'spark' },
+  { to: '/stats', key: 'stats', icon: 'stats' },
+  { to: '/history', key: 'history', icon: 'history' },
+  { to: '/more', key: 'more', icon: 'menu' },
+] as const satisfies readonly { to: string; key: string; icon: IconName }[]
 
 export function Layout() {
   const { t } = useTranslation()
@@ -22,13 +19,17 @@ export function Layout() {
         <Outlet />
       </main>
       <RestTimer />
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)]" aria-label="Main">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-surface/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl" aria-label="Main">
         <ul className="mx-auto flex max-w-xl">
           {TABS.map((tab) => (
             <li key={tab.to} className="flex-1">
-              <NavLink to={tab.to} end={tab.to === '/'} className={({ isActive }) => `flex h-16 flex-col items-center justify-center gap-1 text-xs ${isActive ? 'text-accent' : 'text-muted'}`}>
-                <Icon d={tab.icon} />
-                {t(`nav.${tab.key}`)}
+              <NavLink to={tab.to} end={tab.to === '/'} className={({ isActive }) => `flex h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${isActive ? 'text-accent' : 'text-muted'}`}>
+                {({ isActive }) => (
+                  <>
+                    <span className={`flex h-8 w-14 items-center justify-center rounded-full transition ${isActive ? 'bg-accent/15' : ''}`}><Icon name={tab.icon} /></span>
+                    {t(`nav.${tab.key}`)}
+                  </>
+                )}
               </NavLink>
             </li>
           ))}
