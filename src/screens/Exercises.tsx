@@ -5,6 +5,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 import { useNavigate, useParams } from 'react-router-dom'
 import { db } from '../db'
 import { CustomExerciseForm, ExerciseList } from '../components/ExercisePicker'
+import { MuscleMap } from '../components/MuscleMap'
 import { ExerciseImage } from '../components/ExerciseImage'
 import { e1rm, toDisplay } from '../lib/calc'
 import { useLang } from '../lib/hooks'
@@ -51,6 +52,7 @@ export function ExerciseDetail() {
     return { best, points }
   }, [id])
   const [img, setImg] = useState(0)
+  const [imgFailed, setImgFailed] = useState(false)
 
   if (ex === undefined) return <p className="text-muted">{t('common.loading')}</p>
   if (!ex) return <p className="text-muted">{t('common.empty')}</p>
@@ -65,12 +67,13 @@ export function ExerciseDetail() {
         <button className="btn" aria-pressed={!!ex.favorite} aria-label={t('exercises.favorites')} onClick={() => db.exercises.update(ex.id, { favorite: ex.favorite ? 0 : 1 })}>{ex.favorite ? '★' : '☆'}</button>
       </div>
 
-      {ex.images.length > 0 && (
+      {ex.images.length > 0 && !imgFailed && (
         <button className="card overflow-hidden" onClick={() => setImg((i) => (i + 1) % ex.images.length)} aria-label="image">
-          <img src={exerciseImageUrl(ex.images[img])} alt={exName(ex, lang)} className="w-full object-contain" />
+          <img src={exerciseImageUrl(ex.images[img])} alt={exName(ex, lang)} className="w-full object-contain" onError={() => setImgFailed(true)} />
         </button>
       )}
-      {ex.images.length === 0 && <div className="self-start"><ExerciseImage ex={ex} size={96} /></div>}
+      {(ex.images.length === 0 || imgFailed) && <div className="self-start"><ExerciseImage ex={{ ...ex, images: [] }} size={96} /></div>}
+      <MuscleMap className="mx-auto h-60 max-w-[15rem] justify-center" primary={ex.primaryMuscles} secondary={ex.secondaryMuscles} />
 
       <div className="flex flex-wrap gap-2">
         {ex.primaryMuscles.map((m) => <span key={m} className="chip !bg-accent !text-accent-fg">{t(`muscle.${m}`)}</span>)}

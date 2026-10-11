@@ -5,6 +5,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import { db } from '../db'
 import { formatDuration, toDisplay } from '../lib/calc'
 import { useLang } from '../lib/hooks'
+import { MuscleMap } from '../components/MuscleMap'
 import { exName } from '../lib/names'
 import { useSettings } from '../lib/settings'
 import { bestByExercise, muscleShare, periodStart, summarize, trend, weeklyVolume, workoutStats, type Metric, type Period } from '../lib/stats'
@@ -96,6 +97,7 @@ export function Stats() {
 
           <div className="card p-3">
             <h2 className="mb-2 font-semibold">{t('stats.muscles')}</h2>
+            <MuscleMap className="mx-auto mb-4 h-72 max-w-xs justify-center" intensity={Object.fromEntries(Object.entries(view.share).map(([m, v]) => [m, v / maxShare]))} />
             <ul className="flex flex-col gap-1.5">
               {MUSCLES.filter((m) => view.share[m]).sort((a, b) => view.share[b]! - view.share[a]!).map((m) => (
                 <li key={m} className="flex items-center gap-2 text-sm">

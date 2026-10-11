@@ -1,0 +1,249 @@
+[
+ {
+  "id": "c-seated-row-machine",
+  "name": {
+   "en": "Seated Row Machine",
+   "de": "Rudern an der Rudermaschine (sitzend)"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "compound",
+  "force": "pull",
+  "primaryMuscles": [
+   "middle back"
+  ],
+  "secondaryMuscles": [
+   "lats",
+   "biceps",
+   "shoulders"
+  ],
+  "instructions": {
+   "de": [
+    "Sitzhöhe so einstellen, dass die Griffe auf Brusthöhe liegen, Brust gegen das Polster legen.",
+    "Griffe fassen, Schultern tief und die Brust offen halten.",
+    "Ellbogen nah am Körper nach hinten ziehen und die Schulterblätter zusammenführen.",
+    "Kurz halten und kontrolliert zurückführen, ohne die Gewichte abzulegen."
+   ],
+   "en": [
+    "Set the seat so the handles are at chest height and rest your chest against the pad.",
+    "Grip the handles, keep your shoulders down and chest open.",
+    "Pull your elbows back close to your body and squeeze your shoulder blades together.",
+    "Hold briefly, then return under control without resting the weight stack."
+   ]
+  }
+ },
+ {
+  "id": "c-lat-pulldown-machine",
+  "name": {
+   "en": "Lat Pulldown Machine",
+   "de": "Latzugmaschine (Maschine mit Griffen)"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "compound",
+  "force": "pull",
+  "primaryMuscles": [
+   "lats"
+  ],
+  "secondaryMuscles": [
+   "biceps",
+   "middle back"
+  ],
+  "instructions": {
+   "de": [
+    "Sitz und Beinpolster so einstellen, dass die Oberschenkel fixiert sind.",
+    "Griffe fassen und die Brust leicht herausstrecken.",
+    "Ellbogen nach unten und seitlich an den Körper ziehen, bis die Griffe auf Brusthöhe sind.",
+    "Langsam nach oben zurückführen, bis die Arme fast gestreckt sind."
+   ],
+   "en": [
+    "Adjust the seat and thigh pad so your legs are locked in.",
+    "Grip the handles and lift your chest slightly.",
+    "Pull your elbows down and in toward your sides until the handles reach chest height.",
+    "Return slowly until your arms are almost straight."
+   ]
+  }
+ },
+ {
+  "id": "c-back-extension-machine",
+  "name": {
+   "en": "Back Extension Machine",
+   "de": "Rückenstrecker-Maschine"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "isolation",
+  "force": "pull",
+  "primaryMuscles": [
+   "lower back"
+  ],
+  "secondaryMuscles": [
+   "glutes",
+   "hamstrings"
+  ],
+  "instructions": {
+   "de": [
+    "Sitz so einstellen, dass die Drehachse auf Höhe der Hüfte liegt, Rücken gegen das Polster.",
+    "Füße fixieren und die Arme vor der Brust kreuzen oder die Griffe fassen.",
+    "Den Oberkörper kontrolliert nach hinten bis in die Streckung führen, ohne ins Hohlkreuz zu fallen.",
+    "Langsam zurückkehren und die Spannung im unteren Rücken halten."
+   ],
+   "en": [
+    "Set the seat so the machine pivot is level with your hips and your back rests on the pad.",
+    "Secure your feet and cross your arms or hold the handles.",
+    "Extend your torso back under control without over-arching.",
+    "Return slowly and keep tension in your lower back."
+   ]
+  }
+ },
+ {
+  "id": "c-glute-machine",
+  "name": {
+   "en": "Glute Kickback Machine",
+   "de": "Glute-Maschine (Kickback)"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "isolation",
+  "force": "push",
+  "primaryMuscles": [
+   "glutes"
+  ],
+  "secondaryMuscles": [
+   "hamstrings"
+  ],
+  "instructions": {
+   "de": [
+    "Brust gegen das Polster legen und einen Fuß auf das Pedal stellen.",
+    "Das Bein kontrolliert nach hinten strecken und das Gesäß anspannen.",
+    "Oben kurz halten, ohne den Rücken zu überstrecken.",
+    "Langsam zurückführen, Satz beenden und die Seite wechseln."
+   ],
+   "en": [
+    "Rest your chest on the pad and place one foot on the pedal.",
+    "Press the leg back under control and squeeze the glute.",
+    "Hold briefly at the top without over-arching your back.",
+    "Return slowly, finish the set and switch sides."
+   ]
+  }
+ },
+ {
+  "id": "c-rotary-torso-machine",
+  "name": {
+   "en": "Rotary Torso Machine",
+   "de": "Rumpfdrehmaschine"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "isolation",
+  "force": "pull",
+  "primaryMuscles": [
+   "abdominals"
+  ],
+  "secondaryMuscles": [
+   "lower back"
+  ],
+  "instructions": {
+   "de": [
+    "Beine fixieren und den Oberkörper aufrecht gegen das Polster setzen.",
+    "Mit der Rumpfmuskulatur zur Seite drehen, nicht mit den Armen ziehen.",
+    "Am Ende der Bewegung kurz halten.",
+    "Kontrolliert zurückdrehen und die Seite wechseln."
+   ],
+   "en": [
+    "Lock your legs in and sit upright against the pad.",
+    "Rotate to the side using your trunk, not your arms.",
+    "Hold briefly at the end of the movement.",
+    "Rotate back under control and switch sides."
+   ]
+  }
+ },
+ {
+  "id": "c-lateral-raise-machine",
+  "name": {
+   "en": "Lateral Raise Machine",
+   "de": "Seitheben-Maschine"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "isolation",
+  "force": "pull",
+  "primaryMuscles": [
+   "shoulders"
+  ],
+  "secondaryMuscles": [],
+  "instructions": {
+   "de": [
+    "Sitzhöhe so einstellen, dass die Drehachse auf Schulterhöhe liegt.",
+    "Die Unterarme an die Polster legen und die Ellbogen seitlich anheben.",
+    "Bis etwa auf Schulterhöhe führen, Schultern nicht hochziehen.",
+    "Langsam absenken, ohne die Gewichte abzulegen."
+   ],
+   "en": [
+    "Set the seat so the pivot is at shoulder height.",
+    "Rest your forearms on the pads and raise your elbows out to the sides.",
+    "Lift to about shoulder height without shrugging.",
+    "Lower slowly without resting the weight stack."
+   ]
+  }
+ },
+ {
+  "id": "c-neck-machine",
+  "name": {
+   "en": "Neck Machine",
+   "de": "Nackenmaschine"
+  },
+  "category": "strength",
+  "equipment": [
+   "machine"
+  ],
+  "machine": 1,
+  "level": "beginner",
+  "mechanic": "isolation",
+  "force": "pull",
+  "primaryMuscles": [
+   "neck"
+  ],
+  "secondaryMuscles": [
+   "traps"
+  ],
+  "instructions": {
+   "de": [
+    "Mit geringem Gewicht beginnen und den Kopf gegen das Polster legen.",
+    "Den Kopf kontrolliert gegen den Widerstand bewegen, ohne zu ruckeln.",
+    "Langsam und in kleinem Bewegungsradius zurückführen.",
+    "Auf saubere Technik achten, Nackentraining nie mit Schwung ausführen."
+   ],
+   "en": [
+    "Start with a light load and place your head against the pad.",
+    "Move your head against the resistance under control, no jerking.",
+    "Return slowly through a small range of motion.",
+    "Keep technique strict, never train the neck with momentum."
+   ]
+  }
+ }
+]

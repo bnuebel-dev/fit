@@ -135,6 +135,13 @@ for (const c of custom) {
   out.push({ favorite: 0, images: [], secondaryMuscles: [], instructions: {}, equipment: [], machine: 0, ...c, source: 'custom' })
 }
 
+// Grundübungen/-geräte aus den PDFs bekommen ein Flag (bessere Sortierung in Liste und Suche)
+const coverage = optional(join(dataDir, 'pdf-coverage.json'), [])
+const core = new Set(coverage.filter((c) => c.core).map((c) => c.id))
+for (const o of out) if (core.has(o.id)) o.core = 1
+const missing = coverage.filter((c) => !out.some((o) => o.id === c.id))
+if (missing.length) { console.error('Fehlende Referenz-Übungen:', missing.map((m) => m.term).join(', ')); process.exit(2) }
+
 mkdirSync(join(new URL('../public/data/', import.meta.url).pathname), { recursive: true })
 writeFileSync(new URL('../public/data/exercises.json', import.meta.url), JSON.stringify(out))
 const de = out.filter((o) => o.name.de).length

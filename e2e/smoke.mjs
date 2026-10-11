@@ -38,7 +38,7 @@ try {
   check('Suche findet deutsche Übungsnamen', hits > 3, `${hits} Treffer`)
   await page.screenshot({ path: `${shots}/02-picker.png` })
   const first = await page.locator('ul button').filter({ hasText: /Bankdrücken/ }).first().innerText()
-  check('Beste Suchtreffer zuerst', /Bankdrücken/.test(first.split('\n')[0]) && first.split('\n')[0].length < 40, first.split('\n')[0])
+  check('Grundübung steht in der Suche ganz oben', first.split('\n')[0] === 'Bankdrücken Langhantel (mittlerer Griff)', first.split('\n')[0])
   await page.locator('ul button').filter({ hasText: /Bankdrücken/ }).first().click()
   await page.getByRole('button', { name: /Speichern/ }).click()
   await page.getByText('Brust und Trizeps').first().waitFor()

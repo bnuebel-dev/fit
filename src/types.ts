@@ -27,6 +27,8 @@ export interface Exercise {
   instructions: { en?: string[]; de?: string[] }
   images: string[]
   favorite: 0 | 1
+  /** Grundübung/-gerät aus dem Trainer-Skript (wird in Liste und Suche bevorzugt) */
+  core?: 1
 }
 
 export interface RoutineItem {

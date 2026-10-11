@@ -26,8 +26,9 @@ export function exerciseImageUrl(path: string): string {
 /** Relevanz für die Sortierung bei aktiver Suche: Name beginnt mit dem Suchbegriff > kurzer Name > Rest. Kleiner = besser. */
 export function searchRank(ex: Exercise, lang: Lang, query: string): number {
   const q = fold(query).trim()
-  if (!q) return 0
+  const boost = ex.core ? -5000 : 0
+  if (!q) return boost
   const name = fold(exName(ex, lang))
   const starts = name.startsWith(q) ? 0 : name.split(/[\s(]+/).some((w) => w.startsWith(q)) ? 1 : 2
-  return starts * 1000 + name.length
+  return boost + starts * 1000 + name.length
 }
