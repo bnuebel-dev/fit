@@ -1,0 +1,260 @@
+[
+ {
+  "term": "Bankdrücken",
+  "source": "Modul 6/7/9",
+  "id": "Barbell_Bench_Press_-_Medium_Grip",
+  "core": true
+ },
+ {
+  "term": "Schrägbankdrücken",
+  "source": "Modul 6/9",
+  "id": "Barbell_Incline_Bench_Press_-_Medium_Grip",
+  "core": true
+ },
+ {
+  "term": "Kniebeuge",
+  "source": "Modul 6/7/9",
+  "id": "Barbell_Squat",
+  "core": true
+ },
+ {
+  "term": "Kreuzheben",
+  "source": "Modul 6/7/9",
+  "id": "Barbell_Deadlift",
+  "core": true
+ },
+ {
+  "term": "Rumänisches Kreuzheben",
+  "source": "Modul 8/9",
+  "id": "Romanian_Deadlift",
+  "core": true
+ },
+ {
+  "term": "Beinpresse",
+  "source": "Modul 6/9",
+  "id": "Leg_Press",
+  "core": true
+ },
+ {
+  "term": "Beinstrecker (Kniestrecker)",
+  "source": "Modul 6/9",
+  "id": "Leg_Extensions",
+  "core": true
+ },
+ {
+  "term": "Beinbeuger",
+  "source": "Modul 6/9",
+  "id": "Lying_Leg_Curls",
+  "core": true
+ },
+ {
+  "term": "Beinbeuger sitzend",
+  "source": "Modul 6/9",
+  "id": "Seated_Leg_Curl",
+  "core": false
+ },
+ {
+  "term": "Brustpresse",
+  "source": "Modul 6/9",
+  "id": "Leverage_Chest_Press",
+  "core": true
+ },
+ {
+  "term": "Butterfly / Butterflymaschine",
+  "source": "Modul 6/9",
+  "id": "Butterfly",
+  "core": true
+ },
+ {
+  "term": "Schulterdrücken (Kurzhantel)",
+  "source": "Modul 6/9",
+  "id": "Dumbbell_Shoulder_Press",
+  "core": true
+ },
+ {
+  "term": "Schulterpresse / Schulterdrückmaschine",
+  "source": "Modul 6/9",
+  "id": "Leverage_Shoulder_Press",
+  "core": true
+ },
+ {
+  "term": "Überkopfdrücken (Langhantel)",
+  "source": "Modul 7/9",
+  "id": "Standing_Military_Press",
+  "core": true
+ },
+ {
+  "term": "Latzug",
+  "source": "Modul 6/9",
+  "id": "Wide-Grip_Lat_Pulldown",
+  "core": true
+ },
+ {
+  "term": "Rudern (Kabel)",
+  "source": "Modul 6",
+  "id": "Seated_Cable_Rows",
+  "core": true
+ },
+ {
+  "term": "Langhantelrudern",
+  "source": "Modul 9",
+  "id": "Bent_Over_Barbell_Row",
+  "core": true
+ },
+ {
+  "term": "Klimmzug",
+  "source": "Modul 6",
+  "id": "Pullups",
+  "core": true
+ },
+ {
+  "term": "Bizeps-Curls",
+  "source": "Modul 6/9",
+  "id": "Barbell_Curl",
+  "core": true
+ },
+ {
+  "term": "Bizeps-Curls (Kurzhantel)",
+  "source": "Modul 9",
+  "id": "Dumbbell_Bicep_Curl",
+  "core": false
+ },
+ {
+  "term": "Bizeps-Konzentrations-Curls",
+  "source": "Modul 9",
+  "id": "Concentration_Curls",
+  "core": false
+ },
+ {
+  "term": "Trizepsdrücken mit dem Seil am Kabelzug",
+  "source": "Modul 6/9",
+  "id": "Triceps_Pushdown_-_Rope_Attachment",
+  "core": true
+ },
+ {
+  "term": "Dips",
+  "source": "Modul 6",
+  "id": "Parallel_Bar_Dip",
+  "core": true
+ },
+ {
+  "term": "Bauchmaschine",
+  "source": "Modul 9",
+  "id": "Ab_Crunch_Machine",
+  "core": true
+ },
+ {
+  "term": "Wadenheben",
+  "source": "Modul 8",
+  "id": "Standing_Calf_Raises",
+  "core": true
+ },
+ {
+  "term": "Rückenstrecker",
+  "source": "Modul 5/6",
+  "id": "Hyperextensions_Back_Extensions",
+  "core": true
+ },
+ {
+  "term": "Ausfallschritte",
+  "source": "Modul 6/9",
+  "id": "Dumbbell_Lunges",
+  "core": true
+ },
+ {
+  "term": "Crunches",
+  "source": "Modul 6",
+  "id": "Crunches",
+  "core": true
+ },
+ {
+  "term": "Plank / Unterarmstütz",
+  "source": "Modul 8",
+  "id": "Plank",
+  "core": false
+ },
+ {
+  "term": "Butterfly Reverse (hintere Schulter)",
+  "source": "Modul 6",
+  "id": "Reverse_Machine_Flyes",
+  "core": false
+ },
+ {
+  "term": "Abduktorenmaschine",
+  "source": "Modul 6",
+  "id": "Thigh_Abductor",
+  "core": false
+ },
+ {
+  "term": "Adduktorenmaschine",
+  "source": "Modul 6",
+  "id": "Thigh_Adductor",
+  "core": false
+ },
+ {
+  "term": "Rudermaschine sitzend",
+  "source": "Modul 6",
+  "id": "c-seated-row-machine",
+  "core": false
+ },
+ {
+  "term": "Latzugmaschine",
+  "source": "Modul 6",
+  "id": "c-lat-pulldown-machine",
+  "core": false
+ },
+ {
+  "term": "Rückenstrecker-Maschine",
+  "source": "Modul 5/6",
+  "id": "c-back-extension-machine",
+  "core": false
+ },
+ {
+  "term": "Glute-Maschine",
+  "source": "Modul 6",
+  "id": "c-glute-machine",
+  "core": false
+ },
+ {
+  "term": "Rumpfdrehmaschine",
+  "source": "Modul 6",
+  "id": "c-rotary-torso-machine",
+  "core": false
+ },
+ {
+  "term": "Seitheben-Maschine",
+  "source": "Modul 6",
+  "id": "c-lateral-raise-machine",
+  "core": false
+ },
+ {
+  "term": "Nackenmaschine",
+  "source": "Modul 6",
+  "id": "c-neck-machine",
+  "core": false
+ },
+ {
+  "term": "Ergometer",
+  "source": "Modul 8/11",
+  "id": "Bicycling_Stationary",
+  "core": false
+ },
+ {
+  "term": "Laufband",
+  "source": "Modul 8/11",
+  "id": "Jogging_Treadmill",
+  "core": false
+ },
+ {
+  "term": "Crosstrainer",
+  "source": "Modul 8/11",
+  "id": "Elliptical_Trainer",
+  "core": false
+ },
+ {
+  "term": "Rudergerät",
+  "source": "Modul 8/11",
+  "id": "Rowing_Stationary",
+  "core": false
+ }
+]
