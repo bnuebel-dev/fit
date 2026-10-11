@@ -12,6 +12,7 @@ export const en: Dict = {
     title: 'Workout', routines: 'Routines', newRoutine: 'New routine', startEmpty: 'Start empty workout',
     resume: 'Workout in progress – resume', lastDone: 'Last', never: 'Never', noRoutines: 'Create your first routine or start an empty workout.',
     routineName: 'Routine name', color: 'Color', weekday: 'Weekday', addExercise: 'Add exercise',
+    addWarmups: 'Insert warm-up sets', 
     targetSets: 'Sets', targetReps: 'Reps', rest: 'Rest (s)', superset: 'Superset with next exercise',
     finish: 'Finish', discard: 'Discard', discardConfirm: 'Discard workout? All entries will be lost.',
     addSet: 'Add set', previous: 'Previous', set: 'Set', kg: 'kg', lb: 'lb', rpe: 'RPE',
@@ -50,8 +51,19 @@ export const en: Dict = {
     volume: 'Volume', sets: 'Sets', reps: 'Reps', avg: 'Avg', max: 'Max', sum: 'Total', trend: 'Trend', muscles: 'Muscle distribution',
     volumeOverTime: 'Volume per week', records: 'Records', noData: 'No workouts in this period.',
   },
+  insights: {
+    kcal: 'Burn (estimated, kcal)', kcalNote: 'Estimated from duration, set density and body weight (MET values). Without a heart-rate measurement it is only a rough guide.',
+    kcalPerWeek: 'Estimated burn per week (kcal)',
+    reportTitle: 'Weekly report', reportHint: 'This week compared with last week', thisWeek: 'This', lastWeek: 'Last', workouts: 'Workouts',
+    goal: 'Weekly goal', goalSetting: 'Weekly goal (workouts per week)', streak: 'Streak', streakWeeks_one: '{{count}} week in a row', streakWeeks_other: '{{count}} weeks in a row',
+    topMuscles: 'Most trained', calendar: 'Training calendar', prevMonth: 'Previous month', nextMonth: 'Next month', trainedDays_one: '{{count}} training day', trainedDays_other: '{{count}} training days',
+  },
+  photos: {
+    title: 'Photo book', add: 'Photo', photo: 'Photo', compare: 'Compare', compareHint: 'Pick two photos ({{n}} of 2).', empty: 'No photos yet. They stay on your device and are part of the backup.',
+    error: 'The photo could not be processed.',
+  },
   body: {
-    title: 'Body', weight: 'Body weight', height: 'Height', chest: 'Chest', waist: 'Waist', hips: 'Hips', bicepsL: 'Biceps left',
+    chartMetric: 'Measurement', title: 'Body', weight: 'Body weight', height: 'Height', chest: 'Chest', waist: 'Waist', hips: 'Hips', bicepsL: 'Biceps left',
     bicepsR: 'Biceps right', thighL: 'Thigh left', thighR: 'Thigh right', neck: 'Neck', shoulders: 'Shoulders',
     newEntry: 'New entry', history: 'History', bmi: 'BMI', date: 'Date', empty: 'No entries yet.', cm: 'cm',
   },

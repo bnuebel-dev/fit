@@ -11,7 +11,9 @@ import { toDisplay } from '../lib/calc'
 import { useLang } from '../lib/hooks'
 import { exName } from '../lib/names'
 import { useSettings } from '../lib/settings'
-import { weekStart, workoutStats } from '../lib/stats'
+import { weekStart } from '../lib/stats'
+import { weekStreak, weeklyCounts } from '../lib/streak'
+import { useTraining } from '../lib/useTraining'
 import { useExerciseMap } from '../lib/useExercises'
 import { getActiveWorkout, startWorkout } from '../lib/workout'
 import type { Routine } from '../types'
@@ -37,9 +39,10 @@ export function WorkoutHome() {
   const profile = useProfile()
   const exMap = useExerciseMap()
   const units = settings?.units ?? 'kg'
+  const goal = settings?.weeklyGoal ?? 3
   const active = useLiveQuery(getActiveWorkout, [])
   const routines = useLiveQuery(() => db.routines.orderBy('order').toArray(), [])
-  const data = useLiveQuery(async () => ({ workouts: await db.workouts.toArray(), sets: await db.sets.toArray() }), [])
+  const data = useTraining()
 
   const lastDone = useMemo(() => {
     const map = new Map<number, number>()
@@ -49,17 +52,19 @@ export function WorkoutHome() {
 
   const week = useMemo(() => {
     if (!data) return null
-    const all = workoutStats(data.workouts, data.sets)
+    const all = data.stats
     const since = weekStart(Date.now())
     const cur = all.filter((w) => w.startedAt >= since)
     return {
       count: cur.length,
       sets: cur.reduce((a, w) => a + w.sets, 0),
       volume: cur.reduce((a, w) => a + w.volume, 0),
+      kcal: cur.reduce((a, w) => a + w.kcal, 0),
+      streak: weekStreak(weeklyCounts(data.workouts), settings?.weeklyGoal ?? 3, Date.now()),
       total: all.length,
       last: all[all.length - 1]?.startedAt,
     }
-  }, [data])
+  }, [data, settings?.weeklyGoal])
 
   const tip = useMemo(() => {
     if (!data || !profile) return null
@@ -102,8 +107,15 @@ export function WorkoutHome() {
             <h2 className="font-semibold">{t('home.thisWeek')}</h2>
             <span className="text-xs text-muted">{t('home.lastWorkout')}: {week.last ? relativeDay(week.last, lang, t('common.today')) : t('home.noWorkoutsYet')}</span>
           </div>
+          <div className="mb-3 flex items-center gap-3">
+            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface2" role="progressbar" aria-label={t('insights.goal')} aria-valuemin={0} aria-valuemax={goal} aria-valuenow={Math.min(goal, week.count)}>
+              <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${Math.min(100, (week.count / goal) * 100)}%` }} />
+            </div>
+            <span className="text-sm font-semibold tabular-nums">{week.count} / {goal}</span>
+            {week.streak > 0 && <span className="chip !bg-accent/12 font-semibold !text-accent">🔥 {t('insights.streakWeeks', { count: week.streak })}</span>}
+          </div>
           <div className="grid grid-cols-3 gap-2 text-center">
-            {[[week.count, t('home.workouts')], [week.sets, t('home.sets')], [`${Math.round(toDisplay(week.volume, units))}`, `${t('home.volume')} (${units})`]].map(([v, l]) => (
+            {[[week.sets, t('home.sets')], [`${Math.round(toDisplay(week.volume, units))}`, `${t('home.volume')} (${units})`], [`≈ ${Math.round(week.kcal)}`, t('insights.kcal')]].map(([v, l]) => (
               <div key={String(l)} className="rounded-xl bg-surface2 py-2"><div className="text-lg font-bold tabular-nums">{v}</div><div className="text-xs text-muted">{l}</div></div>
             ))}
           </div>

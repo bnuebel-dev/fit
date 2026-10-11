@@ -59,6 +59,10 @@ export function SettingsScreen() {
         <NumField className="mt-1" value={s.restDefault} onCommit={(v) => void saveSettings({ restDefault: Math.round(v) })} label={t('settings.restDefault')} />
       </label>
 
+      <label className="text-sm text-muted">{t('insights.goalSetting')}
+        <NumField className="mt-1" value={s.weeklyGoal} min={1} onCommit={(v) => void saveSettings({ weeklyGoal: Math.min(7, Math.max(1, Math.round(v))) })} label={t('insights.goalSetting')} />
+      </label>
+
       <section className="flex flex-col gap-2">
         <h2 className="font-semibold">{t('settings.backup')}</h2>
         <div className="flex gap-2">

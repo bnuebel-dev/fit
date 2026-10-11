@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { db } from '../db'
 import { NumField } from '../components/NumField'
+import { PhotoBook } from '../components/PhotoBook'
 import { Sheet } from '../components/Sheet'
 import { fromDisplay, toDisplay } from '../lib/calc'
 import { useSettings } from '../lib/settings'
@@ -21,12 +22,19 @@ export function Body() {
   const { t } = useTranslation()
   const units = useSettings()?.units ?? 'kg'
   const entries = useLiveQuery(() => db.body.orderBy('date').toArray(), [])
+  const [metric, setMetric] = useState<Field>('weight')
   const [editing, setEditing] = useState<{ id?: number; date: string; values: Record<string, number> } | null>(null)
 
   const latest = (f: Field) => [...(entries ?? [])].reverse().find((e) => e.values[f] !== undefined)?.values[f]
   const w = latest('weight')
   const h = latest('height')
-  const chart = (entries ?? []).filter((e) => e.values.weight).map((e) => ({ date: e.date.slice(5), weight: toDisplay(e.values.weight, units) }))
+  // Messwerte mit mindestens zwei Einträgen lassen sich als Verlauf zeigen
+  const charted = FIELDS.filter((f) => (entries ?? []).filter((e) => e.values[f] !== undefined).length > 1)
+  const current: Field = charted.includes(metric) ? metric : (charted[0] ?? 'weight')
+  const chart = (entries ?? []).filter((e) => e.values[current] !== undefined).map((e) => ({ date: e.date.slice(5), v: current === 'weight' ? toDisplay(e.values[current], units) : e.values[current] }))
+  const first = chart[0]?.v
+  const last = chart[chart.length - 1]?.v
+  const delta = first !== undefined && last !== undefined ? Math.round((last - first) * 10) / 10 : 0
 
   const label = (f: Field) => `${t(`body.${f}`)} (${f === 'weight' ? units : t('body.cm')})`
   const fmt = (f: Field, v: number) => (f === 'weight' ? toDisplay(v, units) : v)
@@ -40,9 +48,17 @@ export function Body() {
 
       {w && h ? <div className="card p-3 text-sm"><span className="text-muted">{t('body.bmi')}:</span> <b>{bmi(w, h)}</b></div> : null}
 
-      {chart.length > 1 && (
+      {charted.length > 0 && (
         <div className="card p-3">
-          <h2 className="mb-2 font-semibold">{t('body.weight')} ({units})</h2>
+          <div className="mb-3 flex gap-2 overflow-x-auto" role="tablist" aria-label={t('body.chartMetric')}>
+            {charted.map((f) => (
+              <button key={f} role="tab" aria-selected={current === f} onClick={() => setMetric(f)} className={`chip shrink-0 !px-3 !py-1.5 text-sm ${current === f ? '!bg-accent !text-accent-fg' : ''}`}>{t(`body.${f}`)}</button>
+            ))}
+          </div>
+          <div className="mb-2 flex items-baseline justify-between">
+            <h2 className="font-semibold">{t(`body.${current}`)} ({current === 'weight' ? units : t('body.cm')})</h2>
+            <span className={`text-sm font-semibold tabular-nums ${delta === 0 ? 'text-muted' : 'text-accent'}`}>{delta > 0 ? '+' : ''}{delta}</span>
+          </div>
           <div className="h-44">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chart}>
@@ -50,14 +66,16 @@ export function Body() {
                 <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--color-muted)' }} />
                 <YAxis domain={['dataMin - 1', 'dataMax + 1']} tick={{ fontSize: 11, fill: 'var(--color-muted)' }} width={40} />
                 <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-line)', borderRadius: 12 }} />
-                <Line type="monotone" dataKey="weight" stroke="var(--color-accent)" strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
+                <Line type="monotone" dataKey="v" stroke="var(--color-accent)" strokeWidth={2.5} dot={{ r: 3 }} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       )}
 
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">{t('body.history')}</h2>
+      <PhotoBook />
+
+      <h2 className="section-title">{t('body.history')}</h2>
       {entries && entries.length === 0 && <p className="text-muted">{t('body.empty')}</p>}
       <ul className="flex flex-col gap-2">
         {[...(entries ?? [])].reverse().map((e) => (

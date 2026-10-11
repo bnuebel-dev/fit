@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
-import type { BodyEntry, Exercise, Routine, SetLog, Workout } from './types'
+import type { BodyEntry, Exercise, Photo, Routine, SetLog, Workout } from './types'
 
 export interface KV {
   key: string
@@ -13,6 +13,7 @@ class FitDB extends Dexie {
   sets!: EntityTable<SetLog, 'id'>
   body!: EntityTable<BodyEntry, 'id'>
   kv!: EntityTable<KV, 'key'>
+  photos!: EntityTable<Photo, 'id'>
 
   constructor(name = 'fit') {
     super(name)
@@ -24,6 +25,7 @@ class FitDB extends Dexie {
       body: '++id, date',
       kv: 'key',
     })
+    this.version(2).stores({ photos: '++id, date' })
   }
 }
 
@@ -63,17 +65,19 @@ export interface BackupFile {
   workouts: Workout[]
   sets: SetLog[]
   body: BodyEntry[]
+  photos?: Photo[]
   customExercises: Exercise[]
   favorites: string[]
   settings: unknown
 }
 
 export async function exportBackup(): Promise<BackupFile> {
-  const [routines, workouts, sets, body, exercises, settings] = await Promise.all([
+  const [routines, workouts, sets, body, photos, exercises, settings] = await Promise.all([
     db.routines.toArray(),
     db.workouts.toArray(),
     db.sets.toArray(),
     db.body.toArray(),
+    db.photos.toArray(),
     db.exercises.toArray(),
     db.kv.get('settings'),
   ])
@@ -85,6 +89,7 @@ export async function exportBackup(): Promise<BackupFile> {
     workouts,
     sets,
     body,
+    photos,
     customExercises: exercises.filter((e) => e.id.startsWith('u-')),
     favorites: exercises.filter((e) => e.favorite).map((e) => e.id),
     settings: settings?.value ?? null,
@@ -93,12 +98,13 @@ export async function exportBackup(): Promise<BackupFile> {
 
 export async function importBackup(file: BackupFile): Promise<void> {
   if (file?.app !== 'fit' || file.version !== 1) throw new Error('Not a Fit backup')
-  await db.transaction('rw', [db.routines, db.workouts, db.sets, db.body, db.exercises, db.kv], async () => {
-    await Promise.all([db.routines.clear(), db.workouts.clear(), db.sets.clear(), db.body.clear()])
+  await db.transaction('rw', [db.routines, db.workouts, db.sets, db.body, db.photos, db.exercises, db.kv], async () => {
+    await Promise.all([db.routines.clear(), db.workouts.clear(), db.sets.clear(), db.body.clear(), db.photos.clear()])
     await db.routines.bulkAdd(file.routines)
     await db.workouts.bulkAdd(file.workouts)
     await db.sets.bulkAdd(file.sets)
     await db.body.bulkAdd(file.body)
+    if (file.photos?.length) await db.photos.bulkAdd(file.photos)
     await db.exercises.bulkPut(file.customExercises)
     const favs = new Set(file.favorites)
     await db.exercises.toCollection().modify((e) => {

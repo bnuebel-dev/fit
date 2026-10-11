@@ -11,7 +11,7 @@ const ex = (id: string, extra: Partial<Exercise> = {}): Exercise => ({
 const file = (list: Exercise[]) => async () => JSON.stringify(list)
 
 beforeEach(async () => {
-  await Promise.all([db.exercises.clear(), db.routines.clear(), db.workouts.clear(), db.sets.clear(), db.body.clear(), db.kv.clear()])
+  await Promise.all([db.exercises.clear(), db.routines.clear(), db.workouts.clear(), db.sets.clear(), db.body.clear(), db.photos.clear(), db.kv.clear()])
 })
 
 describe('seedExercises', () => {
@@ -49,6 +49,7 @@ describe('Backup', () => {
     await db.sets.update(sets[0].id!, { weight: 80, reps: 8, done: 1 })
     await finishWorkout(wid)
     await db.body.add({ date: '2026-10-01', values: { weight: 82 } })
+    await db.photos.add({ date: '2026-10-01', data: 'data:image/jpeg;base64,AAAA' })
     await db.kv.put({ key: 'settings', value: { language: 'de', units: 'kg' } })
   }
 
@@ -68,6 +69,7 @@ describe('Backup', () => {
     expect(await db.workouts.count()).toBe(1)
     expect((await db.sets.toArray()).filter((s) => s.done)).toHaveLength(1)
     expect(await db.body.count()).toBe(1)
+    expect((await db.photos.toArray()).map((p) => p.data)).toEqual(['data:image/jpeg;base64,AAAA'])
     expect((await db.exercises.get('squat'))?.favorite).toBe(1)
     expect((await db.exercises.get('bench'))?.favorite).toBe(0)
     expect(await db.exercises.get('u-1')).toBeDefined()

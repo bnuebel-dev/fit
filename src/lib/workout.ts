@@ -1,6 +1,7 @@
 import { db } from '../db'
 import type { Routine, SetLog, Workout, WorkoutItem } from '../types'
 import { e1rm, setVolume } from './calc'
+import { warmupRamp } from './warmup'
 
 export async function getActiveWorkout(): Promise<Workout | undefined> {
   const open = await db.workouts.filter((w) => w.endedAt === undefined).toArray()
@@ -123,6 +124,19 @@ export async function addSet(workoutId: number, exerciseId: string): Promise<num
     type: 'normal',
     done: 0,
   })) as number
+}
+
+/** Fügt eine Aufwärmrampe vor den vorhandenen Sätzen ein. Gibt die Anzahl eingefügter Sätze zurück. */
+export async function addWarmups(workoutId: number, exerciseId: string, workKg: number): Promise<number> {
+  const ramp = warmupRamp(workKg)
+  if (!ramp.length) return 0
+  const sets = await db.sets.where('[workoutId+exerciseId]').equals([workoutId, exerciseId]).toArray()
+  if (sets.some((x) => x.type === 'warmup')) return 0
+  await db.transaction('rw', db.sets, async () => {
+    for (const x of sets) await db.sets.update(x.id!, { order: x.order + ramp.length })
+    for (const [i, r] of ramp.entries()) await db.sets.add({ workoutId, exerciseId, order: i, weight: r.weight, reps: r.reps, type: 'warmup', done: 0 })
+  })
+  return ramp.length
 }
 
 export interface Summary {
