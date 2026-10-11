@@ -9,7 +9,7 @@ import { MuscleMap } from '../components/MuscleMap'
 import { ExerciseImage } from '../components/ExerciseImage'
 import { e1rm, toDisplay } from '../lib/calc'
 import { useLang } from '../lib/hooks'
-import { exInstructions, exName, exerciseImageUrl } from '../lib/names'
+import { IMAGE_HOSTS, exInstructions, exName, exerciseImageUrl } from '../lib/names'
 import { useSettings } from '../lib/settings'
 
 export function Exercises() {
@@ -52,7 +52,8 @@ export function ExerciseDetail() {
     return { best, points }
   }, [id])
   const [img, setImg] = useState(0)
-  const [imgFailed, setImgFailed] = useState(false)
+  const [imgHost, setImgHost] = useState(0)
+  const imgFailed = imgHost >= IMAGE_HOSTS.length
 
   if (ex === undefined) return <p className="text-muted">{t('common.loading')}</p>
   if (!ex) return <p className="text-muted">{t('common.empty')}</p>
@@ -69,7 +70,7 @@ export function ExerciseDetail() {
 
       {ex.images.length > 0 && !imgFailed && (
         <button className="card overflow-hidden" onClick={() => setImg((i) => (i + 1) % ex.images.length)} aria-label="image">
-          <img src={exerciseImageUrl(ex.images[img])} alt={exName(ex, lang)} className="w-full object-contain" onError={() => setImgFailed(true)} />
+          <img src={exerciseImageUrl(ex.images[img], imgHost)} alt={exName(ex, lang)} className="w-full object-contain" onError={() => setImgHost((h) => h + 1)} />
         </button>
       )}
       {(ex.images.length === 0 || imgFailed) && <div className="self-start"><ExerciseImage ex={{ ...ex, images: [] }} size={96} /></div>}

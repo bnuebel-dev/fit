@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { MUSCLES, type Exercise } from './types'
+import { allSlotIds } from './lib/advisor/slots'
 
 const load = <T>(p: string): T => JSON.parse(readFileSync(new URL(p, import.meta.url), 'utf8')) as T
 const exercises = load<Exercise[]>('../public/data/exercises.json')
@@ -46,5 +47,11 @@ describe('Abdeckung nach den Trainer-Skripten', () => {
       const n = exercises.filter((e) => e.category === 'strength' && e.machine && e.primaryMuscles.includes(m as never)).length
       expect(n, m).toBeGreaterThanOrEqual(3)
     }
+  })
+
+  it('alle Grundübungen und alle vom Planer genutzten Übungen haben eine deutsche Anleitung', () => {
+    const ids = new Set([...coverage.map((c) => c.id), ...allSlotIds()])
+    const missing = [...ids].filter((id) => !byId.get(id)?.instructions.de?.length)
+    expect(missing).toEqual([])
   })
 })

@@ -19,6 +19,9 @@ const check = (name, ok, extra = '') => { console.log(`${ok ? 'PASS' : 'FAIL'}  
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM ?? '/opt/pw-browsers/chromium', args: ['--no-sandbox'] })
 const ctx = await browser.newContext({ locale: 'de-DE', viewport: { width: 390, height: 800 }, deviceScaleFactor: 2 })
 await ctx.route(/cdn\.jsdelivr\.net/, (r) => r.abort())
+// 1×1-PNG als Stellvertreter für die Übungsfotos von GitHub (Rückfall, wenn das CDN nicht erreichbar ist)
+const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64')
+await ctx.route(/raw\.githubusercontent\.com\/yuhonas\/free-exercise-db/, (r) => r.fulfill({ status: 200, contentType: 'image/png', body: PNG }))
 const page = await ctx.newPage()
 const errors = []
 page.on('pageerror', (e) => errors.push(String(e)))
@@ -68,6 +71,9 @@ try {
   await page.getByRole('button', { name: 'Brust und Trizeps' }).click()
   await page.getByText('80×8').first().waitFor({ timeout: 5000 }).catch(() => {})
   check('Vorwerte der letzten Einheit sichtbar', await eventually(async () => await page.getByText('80×8').count() > 0))
+  check('Vorschlag nach doppelter Progression (8 Wdh. bei Ziel 8–12 → 9 Wdh.)', await eventually(async () => (await page.getByText('Vorschlag: 80 kg × 9').count()) > 0))
+  await page.getByRole('button', { name: 'Übernehmen' }).click()
+  check('Vorschlag übernehmen setzt die Wiederholungen der offenen Sätze', await eventually(async () => (await page.getByLabel('Wdh.').first().inputValue()) === '9'))
   await page.getByRole('button', { name: 'Verwerfen' }).click().catch(() => {})
   page.once('dialog', (d) => d.accept())
   await page.getByRole('button', { name: 'Verwerfen' }).click().catch(() => {})
@@ -99,6 +105,12 @@ try {
   await page.getByRole('link', { name: 'Verlauf' }).click()
   check('Daten bleiben nach Reload erhalten', await eventually(async () => await page.getByText('Brust und Trizeps').count() > 0))
 
+  // Übungsfoto: CDN gesperrt → Rückfall auf GitHub
+  await page.goto(base + '#/more/exercises/Barbell_Squat')
+  check('Übungsfoto lädt über den GitHub-Rückfall, wenn das CDN ausfällt', await eventually(async () => page.evaluate(() => {
+    const img = document.querySelector('img[alt="Kniebeuge Langhantel"]')
+    return !!img && img.src.includes('raw.githubusercontent.com') && img.naturalWidth > 0
+  }), 5000))
   check('keine JS-Fehler', errors.length === 0, errors.slice(0, 3).join(' | '))
 } catch (e) {
   failed++

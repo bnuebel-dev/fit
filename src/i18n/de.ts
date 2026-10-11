@@ -17,6 +17,7 @@ export const de = {
     removeExercise: 'Übung entfernen', note: 'Notiz', summary: 'Training abgeschlossen', duration: 'Dauer',
     volume: 'Volumen', newPr: 'Neuer Rekord', repeat: 'Wiederholen', emptyName: 'Training', noSets: 'Kein Satz abgehakt – Training wird nicht gespeichert.',
     saveAsRoutine: 'Als Routine speichern', tapToCheck: 'Satz abhaken, um die Pause zu starten',
+    suggestion: 'Vorschlag: {{weight}} {{unit}} × {{reps}}', apply: 'Übernehmen',
   },
   rest: { title: 'Pause', skip: 'Überspringen', next: 'Weiter', plus: '+10 s', minus: '−10 s', done: 'Pause vorbei' },
   exercises: {

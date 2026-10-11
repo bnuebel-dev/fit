@@ -37,3 +37,12 @@ describe('searchRank', () => {
     expect(searchRank(mk('x'), 'de', '')).toBe(0)
   })
 })
+
+import { IMAGE_HOSTS, exerciseImageUrl } from './names'
+describe('Bildquellen', () => {
+  it('erst CDN, dann GitHub als Rückfall, nie außerhalb des Bereichs', () => {
+    expect(exerciseImageUrl('Barbell_Squat/0.jpg')).toBe('https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Squat/0.jpg')
+    expect(exerciseImageUrl('Barbell_Squat/0.jpg', 1)).toContain('raw.githubusercontent.com')
+    expect(exerciseImageUrl('x.jpg', 99)).toBe(`${IMAGE_HOSTS[IMAGE_HOSTS.length - 1]}x.jpg`)
+  })
+})

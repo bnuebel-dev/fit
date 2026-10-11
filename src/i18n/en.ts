@@ -19,6 +19,7 @@ export const en: Dict = {
     removeExercise: 'Remove exercise', note: 'Note', summary: 'Workout complete', duration: 'Duration',
     volume: 'Volume', newPr: 'New record', repeat: 'Repeat', emptyName: 'Workout', noSets: 'No set checked – the workout will not be saved.',
     saveAsRoutine: 'Save as routine', tapToCheck: 'Check a set to start the rest timer',
+    suggestion: 'Suggestion: {{weight}} {{unit}} × {{reps}}', apply: 'Apply',
   },
   rest: { title: 'Rest', skip: 'Skip', next: 'Next', plus: '+10 s', minus: '−10 s', done: 'Rest over' },
   exercises: {

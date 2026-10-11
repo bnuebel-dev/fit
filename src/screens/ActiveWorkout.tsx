@@ -7,7 +7,7 @@ import { ExerciseImage } from '../components/ExerciseImage'
 import { ExercisePicker } from '../components/ExercisePicker'
 import { NumField } from '../components/NumField'
 import { Sheet } from '../components/Sheet'
-import { e1rm, formatDuration, fromDisplay, toDisplay } from '../lib/calc'
+import { e1rm, formatDuration, fromDisplay, nextProgression, toDisplay } from '../lib/calc'
 import { useLang, useNow } from '../lib/hooks'
 import { exName } from '../lib/names'
 import { useRest } from '../lib/restTimer'
@@ -116,6 +116,16 @@ function ExerciseCard({ workout, item, index, name, image, units, linkedPrev, li
   const prev = useLiveQuery(() => previousSets(item.exerciseId, wid), [item.exerciseId, wid])
   const best = useLiveQuery(() => bestE1rm(item.exerciseId, wid), [item.exerciseId, wid])
   const unit = t(`workout.${units}`)
+  // Vorschlag nach doppelter Progression aus der letzten Einheit (Modul 9.3.1)
+  const lo = item.targetReps ?? 8
+  const hi = item.targetRepsMax ?? Math.min(15, lo + 4)
+  const suggestion = prev && prev.some((x) => x.weight > 0 && x.type !== 'warmup') ? nextProgression(prev.filter((x) => x.type !== 'warmup').map((x) => ({ weight: x.weight, reps: x.reps })), [lo, hi]) : null
+  const open = (sets ?? []).filter((x) => !x.done)
+  const applySuggestion = async () => {
+    if (!suggestion) return
+    for (const x of open) await db.sets.update(x.id!, { weight: suggestion.weight, reps: suggestion.reps })
+  }
+  const alreadyApplied = !!suggestion && open.length > 0 && open.every((x) => x.weight === suggestion.weight && x.reps === suggestion.reps)
 
   const update = (s: SetLog, p: Partial<SetLog>) => db.sets.update(s.id!, p)
   const toggleDone = async (s: SetLog) => {
@@ -150,6 +160,12 @@ function ExerciseCard({ workout, item, index, name, image, units, linkedPrev, li
         <button className="btn !px-3" onClick={() => setMenu(true)} aria-label="menu">⋮</button>
       </div>
       {item.note && <p className="mt-1 text-sm text-muted">{item.note}</p>}
+      {suggestion && open.length > 0 && (
+        <div className="mt-2 flex items-center justify-between gap-2 rounded-xl bg-accent/10 px-3 py-2 text-sm" role="note">
+          <span>💡 {t('workout.suggestion', { weight: toDisplay(suggestion.weight, units), unit, reps: suggestion.reps })}</span>
+          {!alreadyApplied && <button className="font-semibold text-accent" onClick={applySuggestion}>{t('workout.apply')}</button>}
+        </div>
+      )}
 
       <div className={`mt-3 grid items-center gap-2 text-center text-xs text-muted ${showRpe ? 'grid-cols-[2rem_1fr_1fr_1fr_3.5rem_2.75rem]' : 'grid-cols-[2rem_1fr_1fr_1fr_2.75rem]'}`}>
         <span>{t('workout.set')}</span><span>{t('workout.previous')}</span><span>{unit}</span><span>{t('common.reps')}</span>{showRpe && <span>{t('workout.rpe')}</span>}<span />

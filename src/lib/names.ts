@@ -19,8 +19,14 @@ export function matchesQuery(ex: Exercise, query: string): boolean {
   return words.every((w) => hay.includes(w))
 }
 
-export function exerciseImageUrl(path: string): string {
-  return `https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/${path}`
+/** Bildquellen in Reihenfolge: schnelles CDN, dann GitHub direkt als Rückfall. */
+export const IMAGE_HOSTS = [
+  'https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/',
+  'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/',
+] as const
+
+export function exerciseImageUrl(path: string, host = 0): string {
+  return `${IMAGE_HOSTS[Math.min(host, IMAGE_HOSTS.length - 1)]}${path}`
 }
 
 /** Relevanz für die Sortierung bei aktiver Suche: Name beginnt mit dem Suchbegriff > kurzer Name > Rest. Kleiner = besser. */

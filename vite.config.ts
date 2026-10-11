@@ -35,11 +35,11 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,svg,png,json}'],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/free-exercise-db'),
+            urlPattern: ({ url }) => ['cdn.jsdelivr.net', 'raw.githubusercontent.com'].includes(url.hostname) && url.pathname.includes('free-exercise-db'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'exercise-images',
-              expiration: { maxEntries: 2000 },
+              expiration: { maxEntries: 600, purgeOnQuotaError: true },
               cacheableResponse: { statuses: [0, 200] },
             },
           },

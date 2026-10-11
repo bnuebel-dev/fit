@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { exerciseImageUrl } from '../lib/names'
+import { IMAGE_HOSTS, exerciseImageUrl } from '../lib/names'
 import type { Exercise } from '../types'
 
 export function ExerciseImage({ ex, size = 48, index = 0 }: { ex: Pick<Exercise, 'images' | 'primaryMuscles'>; size?: number; index?: number }) {
-  const [failed, setFailed] = useState(false)
+  const [host, setHost] = useState(0)
+  const failed = host >= IMAGE_HOSTS.length
   const src = ex.images[index] ?? ex.images[0]
   if (!src || failed) {
     return (
@@ -16,12 +17,12 @@ export function ExerciseImage({ ex, size = 48, index = 0 }: { ex: Pick<Exercise,
   }
   return (
     <img
-      src={exerciseImageUrl(src)}
+      src={exerciseImageUrl(src, host)}
       alt=""
       loading="lazy"
       width={size}
       height={size}
-      onError={() => setFailed(true)}
+      onError={() => setHost((h) => h + 1)}
       className="shrink-0 rounded-xl bg-surface2 object-cover"
       style={{ width: size, height: size }}
     />
