@@ -6,3 +6,4 @@ dist
 *.db
 GymRun_Data_Backup*
 e2e/shots
+*.tsbuildinfo

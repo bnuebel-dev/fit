@@ -1,5 +1,5 @@
 export const de = {
-  nav: { workout: 'Training', stats: 'Statistik', history: 'Verlauf', body: 'Körper', more: 'Mehr' },
+  nav: { workout: 'Training', advisor: 'Advisor', stats: 'Statistik', history: 'Verlauf', body: 'Körper', more: 'Mehr' },
   common: {
     save: 'Speichern', cancel: 'Abbrechen', delete: 'Löschen', edit: 'Bearbeiten', add: 'Hinzufügen',
     back: 'Zurück', search: 'Suchen', ok: 'OK', close: 'Schließen', none: 'Keine', all: 'Alle',
@@ -55,7 +55,7 @@ export const de = {
   },
   more: {
     title: 'Mehr', exercises: 'Übungen', oneRm: '1RM-Rechner', plates: 'Hantelscheiben-Rechner', stopwatch: 'Stoppuhr',
-    settings: 'Einstellungen', knowledge: 'Wissen', strengthLevel: 'Kraftlevel', energy: 'Energie, Makros und Puls', advisor: 'Advisor', calculators: 'Rechner', about: 'Über Fit',
+    settings: 'Einstellungen', knowledge: 'Wissen', strengthLevel: 'Kraftlevel', energy: 'Energie, Makros und Puls', body: 'Körper', advisor: 'Advisor', calculators: 'Rechner', about: 'Über Fit',
   },
   tools: {
     oneRmTitle: '1RM-Rechner', oneRmHint: 'Gewicht und Wiederholungen eines Satzes eintragen.', est1rm: 'Geschätztes 1RM', percent: '%',
@@ -156,8 +156,34 @@ export const de = {
       title: 'Coach', keyMissing: 'Trage deinen OpenRouter-Schlüssel ein, um den Coach zu nutzen.', settings: 'Verbindung', modelLabel: 'Modell', loadModels: 'Modelle laden',
       share: 'Trainingsdaten teilen', placeholder: 'Frag deinen Coach …', send: 'Senden', stop: 'Stopp', clear: 'Neuer Chat', error: 'Fehler',
       disclaimer: 'Der Coach ersetzt keine ärztliche oder physiotherapeutische Beratung. Es werden nur Daten gesendet, die du freigibst.',
-      starters: { review: 'Beurteile mein Training der letzten Wochen.', bench: 'Wie steigere ich mein Bankdrücken?', plan: 'Welche Übungen fehlen in meinem Plan?', deload: 'Brauche ich bald eine Deload-Woche?' },
+      starters: { review: 'Beurteile mein Training der letzten Wochen.', bench: 'Wie steigere ich mein Bankdrücken?', plan: 'Stell mir Fragen zu meinem Training und erstelle daraus einen Plan.', deload: 'Brauche ich bald eine Deload-Woche?' },
     },
+  },
+  wizard: {
+    title: 'Plan im Frage-Antwort-Modus', intro: 'Fünf kurze Fragen, dann baue ich dir einen Plan nach den Regeln der Trainingsplanung. Zu jeder Frage steht, warum ich sie stelle.',
+    start: 'Los geht’s', step: 'Frage {{n}} von {{total}}', why: 'Warum frage ich das?', back: 'Zurück', restart: 'Neu beginnen', next: 'Weiter', showPlan: 'Plan erstellen',
+    summary: 'Dein Plan auf einen Blick', change: 'Antworten ändern', refine: 'Mit dem Coach verfeinern', refineHint: 'Öffnet den Coach mit deinem Plan, damit du Fragen stellen und Anpassungen besprechen kannst (benötigt einen OpenRouter-Schlüssel).',
+    refineMessage: 'Hier ist mein Trainingsplan. Bitte prüfe ihn und schlage Verbesserungen vor.',
+    result: '{{days}} Tage pro Woche, {{split}}, etwa {{minutes}} Minuten, Ziel {{goal}}',
+    splits: { single: 'Ganzkörper', fullbody: 'Ganzkörper', upperlower: 'Oberkörper/Unterkörper', ppl5: 'Push/Pull/Beine plus Oberkörper/Unterkörper', ppl6: 'Push/Pull/Beine' },
+    q: {
+      goal: { title: 'Was ist dein Hauptziel?', why: 'Das Ziel legt Wiederholungsbereich und Intensität fest: Kraft 1 bis 6 Wiederholungen, Muskelaufbau 6 bis 12, Kraftausdauer 13 bis 30. (Trainingslehre, Modul 7)',
+        hypertrophy: ['Muskelaufbau', 'Mehr Muskelmasse und Form'], strength: ['Kraft', 'Schwerere Gewichte bewegen'], endurance: ['Kraftausdauer', 'Länger durchhalten, höhere Wiederholungen'], general: ['Allgemein fit', 'Gesund und belastbar, ohne klares Ziel'] },
+      experience: { title: 'Wie viel Trainingserfahrung hast du?', why: 'Das Niveau bestimmt das sinnvolle Volumen und die Progression: Einsteiger steigern das Gewicht von Einheit zu Einheit, Fortgeschrittene eher von Woche zu Woche. (Modul 7 und 9)',
+        new: ['Neu dabei', 'Unter 6 Monate Krafttraining'], some: ['Einige Monate bis 2 Jahre', 'Regelmäßig dabei, Gewichte steigen noch'], years: ['Mehrere Jahre', 'Fortschritte nur noch in kleinen Schritten'], casual: ['Gelegenheitssportler', 'Fit bleiben mit lockerem Training'] },
+      days: { title: 'An wie vielen Tagen pro Woche kannst du trainieren?', why: 'Die Zahl der Tage bestimmt den Split: bis 3 Tage Ganzkörper, 4 Tage Oberkörper/Unterkörper, 5 bis 6 Tage Push/Pull/Beine. Wähle, was du wirklich durchhältst: Beständigkeit ist die Basis. (Modul 9)',
+        d1: ['1 Tag', 'Ganzkörper (wenig, aber besser als nichts)'], d2: ['2 Tage', 'Ganzkörper'], d3: ['3 Tage', 'Ganzkörper'], d4: ['4 Tage', 'Oberkörper/Unterkörper'], d5: ['5 Tage', 'Push/Pull/Beine plus Oberkörper/Unterkörper'], d6: ['6 Tage', 'Push/Pull/Beine, zweimal pro Woche'] },
+      minutes: { title: 'Wie viel Zeit hast du pro Einheit?', why: 'Aus der Zeit ergibt sich, wie viele Übungen und Sätze hineinpassen. Pausen sind eingerechnet: 3 bis 5 Minuten bei schweren Sätzen, 1 bis 2 Minuten bei Isolationsübungen. (Modul 9)',
+        m30: ['30 Minuten', 'Kurz und kompakt'], m45: ['45 Minuten', 'Gut machbar'], m60: ['60 Minuten', 'Der Klassiker'], m75: ['75 Minuten', 'Mehr Volumen'], m90: ['90 Minuten', 'Viel Zeit'] },
+      equipment: { title: 'Womit trainierst du lieber?', why: 'Geräteübungen sind ein guter Einstieg (leicht zu lernen, stabil, ohne Hilfsperson). Freie Grundübungen bilden die Basis fortgeschrittener Pläne. Für den Muskelaufbau sind beide gut geeignet. (Modul 9, Übungsauswahl)',
+        machines: ['Geräte', 'Maschinen und Kabelzug, leicht zu lernen'], free: ['Freie Gewichte', 'Langhantel, Kurzhantel, Körpergewicht'] },
+    },
+  },
+  home: {
+    welcomeTitle: 'Willkommen bei Fit', welcomeText: 'Starte mit einem Plan, den ich dir nach den Regeln der Trainingsplanung zusammenstelle. Dafür brauche ich nur fünf Antworten.',
+    createPlan: 'Plan erstellen (5 Fragen)', explore: 'Wissen entdecken', thisWeek: 'Diese Woche', workouts: 'Trainings', sets: 'Sätze', volume: 'Volumen', lastWorkout: 'Letztes Training',
+    today: 'Heute dran', startToday: 'Starten', tip: 'Tipp vom Advisor', openAdvisor: 'Zum Advisor', quick: 'Schnellzugriff', noWorkoutsYet: 'Noch kein Training',
+    planCardTitle: 'Neuen Plan erstellen', planCardText: 'Frage-Antwort-Modus mit Begründung',
   },
   pwa: { offlineReady: 'Offline bereit', update: 'Neue Version verfügbar' },
 }

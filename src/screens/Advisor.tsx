@@ -1,14 +1,14 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { db } from '../db'
-import { NumField } from '../components/NumField'
-import { computeHints, type Hint } from '../lib/advisor/hints'
+import { computeHints } from '../lib/advisor/hints'
+import { HINT_ICON, hintText } from '../lib/advisor/hintText'
 import { OpenRouterError, buildContext, listModels, streamChat, systemPrompt, type ChatMessage } from '../lib/advisor/openrouter'
-import { createPlan, type Goal, type Level, type Plan } from '../lib/advisor/planner'
-import { saveProfile, useProfile, type Profile } from '../lib/advisor/profile'
-import { toDisplay } from '../lib/calc'
+import { createPlan, suggestWeekdays, type Plan } from '../lib/advisor/planner'
+import { QUESTIONS, defaultAnswers, planToText, toPlanInput, type Answers } from '../lib/advisor/wizard'
+import { saveProfile, useProfile } from '../lib/advisor/profile'
 import { useLang } from '../lib/hooks'
 import { exName } from '../lib/names'
 import { saveSettings, useSettings } from '../lib/settings'
@@ -16,65 +16,123 @@ import { useExerciseMap } from '../lib/useExercises'
 import type { Routine } from '../types'
 
 type Tab = 'plan' | 'hints' | 'coach'
-const GOALS: Goal[] = ['hypertrophy', 'strength', 'endurance', 'general']
-const LEVELS: Level[] = ['beginner', 'advanced', 'pro', 'hobby']
 const COLORS = ['#f59e0b', '#ef4444', '#a78bfa', '#facc15', '#34d399', '#38bdf8']
 
 export function Advisor() {
   const { t } = useTranslation()
-  const nav = useNavigate()
-  const [tab, setTab] = useState<Tab>('plan')
+  const [params] = useSearchParams()
+  const initial = (['plan', 'hints', 'coach'] as Tab[]).find((x) => x === params.get('tab')) ?? 'plan'
+  const [tab, setTab] = useState<Tab>(initial)
+  const [seed, setSeed] = useState<string | null>(null)
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2">
-        <button className="btn" onClick={() => nav('/more')} aria-label={t('common.back')}>←</button>
-        <h1 className="text-2xl font-bold">{t('advisor.title')}</h1>
-      </div>
+      <h1 className="text-2xl font-bold">{t('advisor.title')}</h1>
       <div className="flex gap-2" role="tablist">
         {(['plan', 'hints', 'coach'] as Tab[]).map((x) => (
           <button key={x} role="tab" aria-selected={tab === x} className={`btn flex-1 ${tab === x ? '!bg-accent !text-accent-fg' : ''}`} onClick={() => setTab(x)}>{t(`advisor.tabs.${x}`)}</button>
         ))}
       </div>
-      {tab === 'plan' && <PlanTab />}
+      {tab === 'plan' && <PlanTab onRefine={(text) => { setSeed(text); setTab('coach') }} />}
       {tab === 'hints' && <HintsTab />}
-      {tab === 'coach' && <CoachTab />}
+      {tab === 'coach' && <CoachTab seed={seed} onSeedUsed={() => setSeed(null)} />}
     </div>
   )
 }
 
-function Chips<T extends string | number>({ value, options, onChange, label }: { value: T; options: { v: T; label: string }[]; onChange: (v: T) => void; label: string }) {
+// ---------- Stufe 1: Planer im Frage-Antwort-Modus
+function sessionTitle(s: Plan['sessions'][number], t: ReturnType<typeof useTranslation>['t']): string {
+  return `${t(`advisor.session.${s.kind}`)}${s.label ? ` ${s.label}` : ''}`
+}
+
+function PlanTab({ onRefine }: { onRefine: (text: string) => void }) {
+  const { t } = useTranslation()
+  const profile = useProfile()
+  const [step, setStep] = useState(-1) // -1 Einstieg, 0..4 Fragen, 5 Ergebnis
+  const [answers, setAnswers] = useState<Answers | null>(null)
+  const [plan, setPlan] = useState<Plan | null>(null)
+  if (!profile) return null
+
+  const start = () => { setAnswers(defaultAnswers(profile)); setStep(0) }
+  const finish = (a: Answers) => {
+    const input = toPlanInput(a)
+    void saveProfile(input)
+    setPlan(createPlan(input))
+    setStep(QUESTIONS.length)
+  }
+
+  if (step < 0 || !answers) {
+    return (
+      <div className="card flex flex-col gap-4 p-5">
+        <div className="text-3xl" aria-hidden>🧠</div>
+        <h2 className="text-lg font-semibold">{t('wizard.title')}</h2>
+        <p className="text-sm text-muted">{t('wizard.intro')}</p>
+        <button className="btn btn-primary" onClick={start}>{t('wizard.start')}</button>
+      </div>
+    )
+  }
+
+  if (step >= QUESTIONS.length && plan) {
+    return (
+      <PlanResult
+        plan={plan}
+        answers={answers}
+        onChange={() => setStep(0)}
+        onRestart={() => { setPlan(null); setAnswers(null); setStep(-1) }}
+        onRefine={onRefine}
+      />
+    )
+  }
+
+  const q = QUESTIONS[step]
+  const last = step === QUESTIONS.length - 1
+  const optKey = (v: string | number) => (q.id === 'days' ? `d${v}` : q.id === 'minutes' ? `m${v}` : String(v))
   return (
-    <div>
-      <div className="mb-1 text-sm text-muted">{label}</div>
-      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={label}>
-        {options.map((o) => (
-          <button key={String(o.v)} role="radio" aria-checked={value === o.v} className={`chip !px-3 !py-2 text-sm ${value === o.v ? '!bg-accent !text-accent-fg' : ''}`} onClick={() => onChange(o.v)}>{o.label}</button>
-        ))}
+    <div className="flex flex-col gap-4" aria-label={t('wizard.title')}>
+      <div>
+        <div className="mb-1 flex justify-between text-xs text-muted"><span>{t('wizard.step', { n: step + 1, total: QUESTIONS.length })}</span></div>
+        <div className="h-1.5 overflow-hidden rounded-full bg-surface2" role="progressbar" aria-valuemin={1} aria-valuemax={QUESTIONS.length} aria-valuenow={step + 1}>
+          <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }} />
+        </div>
+      </div>
+      <h2 className="text-xl font-bold">{t(`wizard.q.${q.id}.title`)}</h2>
+      <div className="flex flex-col gap-2" role="radiogroup" aria-label={t(`wizard.q.${q.id}.title`)}>
+        {q.options.map((v) => {
+          const [label, desc] = t(`wizard.q.${q.id}.${optKey(v)}`, { returnObjects: true }) as unknown as string[]
+          const selected = answers[q.id] === v
+          return (
+            <button key={String(v)} role="radio" aria-checked={selected} onClick={() => setAnswers({ ...answers, [q.id]: v })}
+              className={`card flex flex-col items-start p-4 text-left ${selected ? '!border-accent bg-accent/10' : ''}`}>
+              <span className="font-semibold">{label}</span>
+              <span className="text-sm text-muted">{desc}</span>
+            </button>
+          )
+        })}
+      </div>
+      <details className="card p-3">
+        <summary className="cursor-pointer text-sm font-semibold">{t('wizard.why')}</summary>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{t(`wizard.q.${q.id}.why`)}</p>
+      </details>
+      <div className="flex gap-2">
+        <button className="btn flex-1" onClick={() => setStep(step === 0 ? -1 : step - 1)}>{t('wizard.back')}</button>
+        <button className="btn btn-primary flex-1" onClick={() => (last ? finish(answers) : setStep(step + 1))}>{last ? t('wizard.showPlan') : t('wizard.next')}</button>
       </div>
     </div>
   )
 }
 
-// ---------- Stufe 1: Planer
-function PlanTab() {
+function PlanResult({ plan, answers, onChange, onRestart, onRefine }: { plan: Plan; answers: Answers; onChange: () => void; onRestart: () => void; onRefine: (text: string) => void }) {
   const { t } = useTranslation()
   const lang = useLang()
   const nav = useNavigate()
-  const profile = useProfile()
   const exMap = useExerciseMap()
-  const [plan, setPlan] = useState<Plan | null>(null)
   const [saved, setSaved] = useState(false)
-  if (!profile) return null
-
-  const set = (p: Partial<Profile>) => { void saveProfile(p); setSaved(false) }
-  const create = () => setPlan(createPlan(profile))
-  const sessionName = (s: Plan['sessions'][number]) => `${t(`advisor.session.${s.kind}`)}${s.label ? ` ${s.label}` : ''}`
+  const [equipmentLabel] = t(`wizard.q.equipment.${answers.equipment}`, { returnObjects: true }) as unknown as string[]
+  const name = (id: string) => { const e = exMap.get(id); return e ? exName(e, lang) : id }
 
   const save = async () => {
-    if (!plan) return
     const base = Date.now()
     const routines: Routine[] = plan.sessions.map((s, i) => ({
-      name: sessionName(s), color: COLORS[i % COLORS.length], order: base + i, note: t('advisor.plan.estimate', { min: s.estMinutes }),
+      name: sessionTitle(s, t), color: COLORS[i % COLORS.length], order: base + i, weekday: suggestWeekdays(plan.input.days)[i], note: t('advisor.plan.estimate', { min: s.estMinutes }),
       items: s.items.map((it) => ({ exerciseId: it.exerciseId, sets: it.sets, reps: it.repsMin, repsMax: it.repsMax, restSec: it.restSec })),
     }))
     await db.routines.bulkAdd(routines)
@@ -83,68 +141,51 @@ function PlanTab() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm text-muted">{t('advisor.plan.intro')}</p>
-      <Chips<Goal> label={t('advisor.plan.goal')} value={profile.goal} onChange={(goal) => set({ goal })} options={GOALS.map((g) => ({ v: g, label: t(`advisor.goals.${g}`) }))} />
-      <Chips<Level> label={t('advisor.plan.level')} value={profile.level} onChange={(level) => set({ level, machines: level === 'beginner' || level === 'hobby' })} options={LEVELS.map((l) => ({ v: l, label: t(`advisor.levels.${l}`) }))} />
-      <Chips<number> label={t('advisor.plan.days')} value={profile.days} onChange={(days) => set({ days })} options={[1, 2, 3, 4, 5, 6].map((d) => ({ v: d, label: String(d) }))} />
-      <label className="text-sm text-muted">{t('advisor.plan.minutes')}
-        <NumField className="mt-1" value={profile.minutes} min={20} onCommit={(minutes) => set({ minutes: Math.round(minutes) })} label={t('advisor.plan.minutes')} />
-      </label>
-      <label className="flex items-center gap-2"><input type="checkbox" checked={profile.machines} onChange={(e) => set({ machines: e.target.checked })} /> {t('advisor.plan.machines')}</label>
-      <button className="btn btn-primary" onClick={create}>{t('advisor.plan.create')}</button>
-
-      {plan && (
-        <div className="flex flex-col gap-4" aria-label="plan">
-          {plan.warnings.map((w, i) => <p key={i} className="card border-warn p-3 text-sm text-warn" role="alert">{t(`advisor.reasons.${w.key}`, w.params)}</p>)}
-          <h2 className="font-semibold">{t('advisor.plan.sessions')}</h2>
-          {plan.sessions.map((s, i) => (
-            <section key={i} className="card p-3" aria-label={sessionName(s)}>
-              <div className="mb-2 flex items-baseline justify-between"><h3 className="font-semibold">{sessionName(s)}</h3><span className="text-xs text-muted">{t('advisor.plan.estimate', { min: s.estMinutes })}</span></div>
-              <ul className="flex flex-col gap-1.5 text-sm">
-                {s.items.map((it) => {
-                  const ex = exMap.get(it.exerciseId)
-                  return (
-                    <li key={it.exerciseId} className="flex justify-between gap-3">
-                      <span className="min-w-0 truncate">{ex ? exName(ex, lang) : it.exerciseId}</span>
-                      <span className="shrink-0 tabular-nums text-muted">{t('advisor.plan.setsReps', { sets: it.sets, min: it.repsMin, max: it.repsMax })} · {it.restSec}s</span>
-                    </li>
-                  )
-                })}
-              </ul>
-            </section>
-          ))}
-          <section className="card p-3">
-            <h3 className="mb-2 font-semibold">{t('advisor.plan.weekly')}</h3>
-            <ul className="flex flex-wrap gap-2">
-              {Object.entries(plan.weekly).map(([g, reps]) => <li key={g} className="chip">{t(`advisor.groups.${g}`)}: {reps} · {t('advisor.plan.perWeek', { n: plan.frequency[g as keyof typeof plan.frequency] })}</li>)}
-            </ul>
-          </section>
-          <details className="card p-3">
-            <summary className="cursor-pointer font-semibold">{t('advisor.plan.why')}</summary>
-            <ul className="mt-2 flex list-disc flex-col gap-2 pl-5 text-sm">
-              {plan.reasons.map((r, i) => <li key={i}>{t(`advisor.reasons.${r.key}`, r.params)}</li>)}
-            </ul>
-          </details>
-          <button className="btn btn-primary" onClick={save}>{saved ? t('advisor.plan.saved') : t('advisor.plan.save')}</button>
-        </div>
-      )}
+    <div className="flex flex-col gap-4" aria-label="plan">
+      <div className="card border-accent bg-accent/10 p-4">
+        <div className="text-xs font-semibold uppercase tracking-wide text-accent">{t('wizard.summary')}</div>
+        <p className="mt-1 font-semibold">{t('wizard.result', { days: plan.input.days, split: t(`wizard.splits.${plan.split}`), minutes: plan.input.minutes, goal: t(`advisor.goals.${answers.goal}`) })}</p>
+        <p className="text-sm text-muted">{t(`advisor.levels.${plan.input.level}`)} · {equipmentLabel}</p>
+      </div>
+      {plan.warnings.map((w, i) => <p key={i} className="card border-warn p-3 text-sm text-warn" role="alert">{t(`advisor.reasons.${w.key}`, w.params)}</p>)}
+      <h2 className="font-semibold">{t('advisor.plan.sessions')}</h2>
+      {plan.sessions.map((s, i) => (
+        <section key={i} className="card p-3" aria-label={sessionTitle(s, t)}>
+          <div className="mb-2 flex items-baseline justify-between"><h3 className="font-semibold">{sessionTitle(s, t)}</h3><span className="text-xs text-muted">{t('advisor.plan.estimate', { min: s.estMinutes })}</span></div>
+          <ul className="flex flex-col gap-1.5 text-sm">
+            {s.items.map((it) => (
+              <li key={it.exerciseId} className="flex justify-between gap-3">
+                <span className="min-w-0 truncate">{name(it.exerciseId)}</span>
+                <span className="shrink-0 tabular-nums text-muted">{t('advisor.plan.setsReps', { sets: it.sets, min: it.repsMin, max: it.repsMax })} · {it.restSec}s</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      <section className="card p-3">
+        <h3 className="mb-2 font-semibold">{t('advisor.plan.weekly')}</h3>
+        <ul className="flex flex-wrap gap-2">
+          {Object.entries(plan.weekly).map(([g, reps]) => <li key={g} className="chip">{t(`advisor.groups.${g}`)}: {reps} · {t('advisor.plan.perWeek', { n: plan.frequency[g as keyof typeof plan.frequency] })}</li>)}
+        </ul>
+      </section>
+      <details className="card p-3" open>
+        <summary className="cursor-pointer font-semibold">{t('advisor.plan.why')}</summary>
+        <ul className="mt-2 flex list-disc flex-col gap-2 pl-5 text-sm">
+          {plan.reasons.map((r, i) => <li key={i}>{t(`advisor.reasons.${r.key}`, r.params)}</li>)}
+        </ul>
+      </details>
+      <button className="btn btn-primary" onClick={save}>{saved ? t('advisor.plan.saved') : t('advisor.plan.save')}</button>
+      <button className="btn" onClick={() => onRefine(`${t('wizard.refineMessage')}\n\n${planToText(plan, name, (s) => sessionTitle(s, t))}`)}>🧠 {t('wizard.refine')}</button>
+      <p className="-mt-2 text-xs text-muted">{t('wizard.refineHint')}</p>
+      <div className="flex gap-2">
+        <button className="btn flex-1" onClick={onChange}>{t('wizard.change')}</button>
+        <button className="btn flex-1" onClick={onRestart}>{t('wizard.restart')}</button>
+      </div>
     </div>
   )
 }
 
 // ---------- Stufe 2: Hinweise
-function hintText(h: Hint, t: ReturnType<typeof useTranslation>['t'], name: (id?: string) => string, units: 'kg' | 'lb'): string {
-  const p = h.params
-  const group = h.group ? t(`advisor.groups.${h.group}`) : ''
-  switch (h.kind) {
-    case 'progress': return t(p.increase ? 'advisor.hints.progressUp' : 'advisor.hints.progressStay', { name: name(h.exerciseId), weight: toDisplay(Number(p.weight), units), unit: units, reps: p.reps, lo: p.lo, hi: p.hi })
-    case 'plateau': return t('advisor.hints.plateau', { name: name(h.exerciseId), sessions: p.sessions })
-    case 'deload': return t('advisor.hints.deload', { weeks: p.weeks })
-    default: return t(`advisor.hints.${h.kind}`, { group, ...p })
-  }
-}
-
 function HintsTab() {
   const { t } = useTranslation()
   const lang = useLang()
@@ -154,14 +195,13 @@ function HintsTab() {
   const data = useLiveQuery(async () => ({ workouts: await db.workouts.toArray(), sets: await db.sets.toArray(), routines: await db.routines.toArray() }), [])
   const hints = useMemo(() => (data && profile ? computeHints({ ...data, exercises: exMap, level: profile.level, now: Date.now() }) : []), [data, profile, exMap])
   const name = (id?: string) => { const e = id ? exMap.get(id) : undefined; return e ? exName(e, lang) : (id ?? '') }
-  const icon: Record<Hint['kind'], string> = { progress: '📈', plateau: '⏸️', volumeLow: '⬇️', volumeHigh: '⬆️', frequencyLow: '📅', frequencyHigh: '📅', deload: '🛌' }
   return (
     <div className="flex flex-col gap-3">
       <h2 className="font-semibold">{t('advisor.hints.title')}</h2>
       {hints.length === 0 && <p className="text-sm text-muted">{t('advisor.hints.empty')}</p>}
       <ul className="flex flex-col gap-2">
         {hints.slice(0, 12).map((h, i) => (
-          <li key={i} className="card flex gap-3 p-3 text-sm"><span aria-hidden>{icon[h.kind]}</span><span>{hintText(h, t, name, units)}</span></li>
+          <li key={i} className="card flex gap-3 p-3 text-sm"><span aria-hidden>{HINT_ICON[h.kind]}</span><span>{hintText(h, t, name, units)}</span></li>
         ))}
       </ul>
     </div>
@@ -194,7 +234,7 @@ function SavedInput({ value, onSave, ...rest }: { value: string; onSave: (v: str
 }
 
 // ---------- Stufe 3: Coach (OpenRouter)
-function CoachTab() {
+function CoachTab({ seed, onSeedUsed }: { seed: string | null; onSeedUsed: () => void }) {
   const { t } = useTranslation()
   const lang = useLang()
   const settings = useSettings()
@@ -207,6 +247,7 @@ function CoachTab() {
   const [error, setError] = useState('')
   const [models, setModels] = useState<string[]>([])
   const abort = useRef<AbortController | null>(null)
+  useEffect(() => { if (seed) { setInput(seed); onSeedUsed() } }, [seed, onSeedUsed])
   // Verbindungsbereich nur beim ersten Anzeigen offen, wenn noch kein Schlüssel da ist (klappt nicht beim Tippen zu)
   const [settingsOpen] = useState(() => !settings?.advisorKey.trim())
 
@@ -280,7 +321,7 @@ function CoachTab() {
       {error && <p role="alert" className="card border-danger p-3 text-sm text-danger">{t('advisor.coach.error')}: {error}</p>}
 
       <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); void send(input) }}>
-        <input className="field flex-1" value={input} placeholder={t('advisor.coach.placeholder')} onChange={(e) => setInput(e.target.value)} disabled={!hasKey} aria-label={t('advisor.coach.placeholder')} />
+        <textarea className="field max-h-40 flex-1 py-2" rows={input.includes('\n') ? 6 : 1} value={input} placeholder={t('advisor.coach.placeholder')} onChange={(e) => setInput(e.target.value)} disabled={!hasKey} aria-label={t('advisor.coach.placeholder')} />
         {busy ? <button type="button" className="btn" onClick={() => abort.current?.abort()}>{t('advisor.coach.stop')}</button> : <button className="btn btn-primary" disabled={!hasKey || !input.trim()}>{t('advisor.coach.send')}</button>}
       </form>
       {messages.length > 0 && <button className="btn" onClick={() => { abort.current?.abort(); setMessages([]); setError('') }}>{t('advisor.coach.clear')}</button>}

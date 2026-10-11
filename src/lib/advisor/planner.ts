@@ -204,3 +204,15 @@ export function createPlan(input: PlanInput): Plan {
 
   return { input: { ...input, days }, split, sessions, weekly, frequency: freq, reasons, warnings }
 }
+
+/** Verteilt die Trainingstage mit möglichst viel Erholung dazwischen (Montag = 1 … Sonntag = 7). */
+export function suggestWeekdays(days: number): number[] {
+  switch (Math.min(6, Math.max(1, Math.round(days)))) {
+    case 1: return [1]
+    case 2: return [1, 4]
+    case 3: return [1, 3, 5]
+    case 4: return [1, 2, 4, 5]
+    case 5: return [1, 2, 3, 4, 5]
+    default: return [1, 2, 3, 4, 5, 6]
+  }
+}

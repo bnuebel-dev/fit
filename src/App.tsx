@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { seedExercises } from './db'
 import { Layout } from './components/Layout'
@@ -77,7 +77,8 @@ export function App() {
         <Route path="more/plates" element={<Plates />} />
         <Route path="more/stopwatch" element={<Stopwatch />} />
         <Route path="more/settings" element={<SettingsScreen />} />
-        <Route path="more/advisor" element={<Advisor />} />
+        <Route path="advisor" element={<Advisor />} />
+        <Route path="more/advisor" element={<Navigate to="/advisor" replace />} />
         <Route path="more/knowledge" element={<Knowledge />} />
         <Route path="more/knowledge/glossary" element={<GlossaryView />} />
         <Route path="more/knowledge/:id" element={<ArticleView />} />

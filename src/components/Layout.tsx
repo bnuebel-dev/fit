@@ -8,9 +8,9 @@ const Icon = ({ d }: { d: string }) => (
 
 const TABS = [
   { to: '/', key: 'workout', icon: 'M8 5v14l11-7z' },
+  { to: '/advisor', key: 'advisor', icon: 'M12 3l1.8 4.6L18.5 9l-4.7 1.4L12 15l-1.8-4.6L5.5 9l4.7-1.4zM18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9z' },
   { to: '/stats', key: 'stats', icon: 'M4 20V10M10 20V4M16 20v-8M22 20H2' },
   { to: '/history', key: 'history', icon: 'M3 12a9 9 0 1 0 3-6.7M3 4v5h5M12 7v5l3 2' },
-  { to: '/body', key: 'body', icon: 'M12 4a2 2 0 1 0 0 .01M6 21l2-9h8l2 9M8 12l-3-4M16 12l3-4' },
   { to: '/more', key: 'more', icon: 'M4 6h16M4 12h16M4 18h16' },
 ] as const
 

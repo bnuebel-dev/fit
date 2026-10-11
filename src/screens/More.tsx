@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 const ITEMS = [
-  { to: '/more/advisor', key: 'advisor', icon: '🧠' },
+  { to: '/advisor', key: 'advisor', icon: '🧠' },
+  { to: '/body', key: 'body', icon: '📏' },
   { to: '/more/knowledge', key: 'knowledge', icon: '📚' },
   { to: '/more/exercises', key: 'exercises', icon: '🏋️' },
   { to: '/more/1rm', key: 'oneRm', icon: '🧮' },
