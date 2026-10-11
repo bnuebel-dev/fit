@@ -12,6 +12,8 @@ const base = `http://localhost:${PORT}/`
 for (let i = 0; i < 50; i++) { try { if ((await fetch(base)).ok) break } catch { /* warten */ } await new Promise((r) => setTimeout(r, 200)) }
 
 let failed = 0
+// Wiederholt eine Bedingung bis zu 3 s – die Oberfläche rendert nach Datenbankzugriffen asynchron.
+const eventually = async (fn, ms = 3000) => { const end = Date.now() + ms; for (;;) { try { if (await fn()) return true } catch { /* nochmal */ } if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 100)) } }
 const check = (name, ok, extra = '') => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${extra ? ' – ' + extra : ''}`); if (!ok) failed++ }
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM ?? '/opt/pw-browsers/chromium', args: ['--no-sandbox'] })
@@ -58,14 +60,14 @@ try {
   await page.screenshot({ path: `${shots}/03-workout.png` })
   await page.getByRole('button', { name: 'Beenden' }).click()
   await page.getByRole('heading', { name: /Training abgeschlossen/ }).waitFor()
-  check('Zusammenfassung erscheint', await page.getByText('640 kg').count() > 0, 'Volumen 640 kg')
+  check('Zusammenfassung erscheint', await eventually(async () => await page.getByText('640 kg').count() > 0), 'Volumen 640 kg')
   await page.screenshot({ path: `${shots}/04-summary.png` })
   await page.getByRole('button', { name: 'OK' }).click()
 
   // Zweites Training: Vorwerte müssen erscheinen
   await page.getByRole('button', { name: 'Brust und Trizeps' }).click()
   await page.getByText('80×8').first().waitFor({ timeout: 5000 }).catch(() => {})
-  check('Vorwerte der letzten Einheit sichtbar', await page.getByText('80×8').count() > 0)
+  check('Vorwerte der letzten Einheit sichtbar', await eventually(async () => await page.getByText('80×8').count() > 0))
   await page.getByRole('button', { name: 'Verwerfen' }).click().catch(() => {})
   page.once('dialog', (d) => d.accept())
   await page.getByRole('button', { name: 'Verwerfen' }).click().catch(() => {})
@@ -73,11 +75,11 @@ try {
 
   // Verlauf und Statistik
   await page.getByRole('link', { name: 'Verlauf' }).click()
-  check('Verlauf zeigt Training', await page.getByText('Brust und Trizeps').count() > 0)
+  check('Verlauf zeigt Training', await eventually(async () => await page.getByText('Brust und Trizeps').count() > 0))
   await page.screenshot({ path: `${shots}/05-history.png` })
   await page.getByRole('link', { name: 'Statistik' }).click()
   await page.getByText('Muskelverteilung').waitFor()
-  check('Statistik zeigt Muskelverteilung', await page.getByText('Brust', { exact: true }).count() > 0)
+  check('Statistik zeigt Muskelverteilung', await eventually(async () => await page.getByText('Brust', { exact: true }).count() > 0))
   await page.screenshot({ path: `${shots}/06-stats.png` })
 
   // Sprache umstellen, Rechner
@@ -95,7 +97,7 @@ try {
   await page.reload()
   await page.getByRole('heading', { name: 'Training' }).waitFor()
   await page.getByRole('link', { name: 'Verlauf' }).click()
-  check('Daten bleiben nach Reload erhalten', await page.getByText('Brust und Trizeps').count() > 0)
+  check('Daten bleiben nach Reload erhalten', await eventually(async () => await page.getByText('Brust und Trizeps').count() > 0))
 
   check('keine JS-Fehler', errors.length === 0, errors.slice(0, 3).join(' | '))
 } catch (e) {

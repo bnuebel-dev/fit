@@ -9,6 +9,8 @@ const base = `http://localhost:${PORT}/`
 for (let i = 0; i < 50; i++) { try { if ((await fetch(base)).ok) break } catch { /* warten */ } await new Promise((r) => setTimeout(r, 200)) }
 
 let failed = 0
+// Wiederholt eine Bedingung bis zu 3 s – die Oberfläche rendert nach Datenbankzugriffen asynchron.
+const eventually = async (fn, ms = 3000) => { const end = Date.now() + ms; for (;;) { try { if (await fn()) return true } catch { /* nochmal */ } if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 100)) } }
 const check = (name, ok, extra = '') => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${extra ? ' – ' + extra : ''}`); if (!ok) failed++ }
 
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM ?? '/opt/pw-browsers/chromium', args: ['--no-sandbox'] })
@@ -36,20 +38,20 @@ try {
   await page.getByRole('radio', { name: '4', exact: true }).click()
   await page.getByRole('button', { name: 'Plan erstellen' }).click()
   await page.getByRole('heading', { name: 'Oberkörper A' }).waitFor()
-  check('Plan für 4 Tage: Oberkörper/Unterkörper A+B', (await page.getByRole('heading', { name: /^(Oberkörper|Unterkörper) [AB]$/ }).count()) === 4)
-  check('Grundübung Kniebeuge im Plan (Fortgeschritten, Freihantel)', (await page.getByText('Kniebeuge Langhantel').count()) > 0)
+  check('Plan für 4 Tage: Oberkörper/Unterkörper A+B', await eventually(async () => (await page.getByRole('heading', { name: /^(Oberkörper|Unterkörper) [AB]$/ }).count()) === 4))
+  check('Grundübung Kniebeuge im Plan (Fortgeschritten, Freihantel)', await eventually(async () => (await page.getByText('Kniebeuge Langhantel').count()) > 0))
   await page.getByText('Warum dieser Plan?').click()
-  check('Begründung nennt Beständigkeit und Deload', (await page.getByText(/Beständigkeit ist die Basis/).count()) > 0 && (await page.getByText(/Entlastungswoche/).count()) > 0)
+  check('Begründung nennt Beständigkeit und Deload', await eventually(async () => (await page.getByText(/Beständigkeit ist die Basis/).count()) > 0 && (await page.getByText(/Entlastungswoche/).count()) > 0))
   await page.screenshot({ path: `${shots}/10-advisor-plan.png`, fullPage: false })
   await page.getByRole('button', { name: 'Als Routinen speichern' }).click()
   await page.getByRole('heading', { name: 'Training' }).waitFor()
   await page.getByText(/^Unterkörper B$/).waitFor()
-  check('Routinen wurden gespeichert und erscheinen im Training', (await page.getByText(/^Oberkörper A$/).count()) === 1 && (await page.getByText(/^Unterkörper B$/).count()) === 1)
+  check('Routinen wurden gespeichert und erscheinen im Training', await eventually(async () => (await page.getByText(/^Oberkörper A$/).count()) === 1 && (await page.getByText(/^Unterkörper B$/).count()) === 1))
 
   // gespeicherte Routine starten: Sätze sind vorbereitet
   await page.getByRole('button', { name: 'Oberkörper A' }).click()
   await page.getByLabel('Gewicht').first().waitFor()
-  check('Routine aus Plan startet mit vorbereiteten Sätzen', (await page.getByLabel('Gewicht').count()) >= 10)
+  check('Routine aus Plan startet mit vorbereiteten Sätzen', await eventually(async () => (await page.getByLabel('Gewicht').count()) >= 10))
   await page.screenshot({ path: `${shots}/11-advisor-routine.png` })
   page.once('dialog', (d) => d.accept())
   await page.getByRole('button', { name: 'Verwerfen' }).click()
@@ -58,12 +60,12 @@ try {
   // --- Hinweise (leeres Logbuch)
   await page.goto(base + '#/more/advisor')
   await page.getByRole('tab', { name: 'Hinweise' }).click()
-  check('Hinweise ohne Daten: freundlicher Leerzustand', (await page.getByText(/Noch keine Hinweise/).count()) > 0)
+  check('Hinweise ohne Daten: freundlicher Leerzustand', await eventually(async () => (await page.getByText(/Noch keine Hinweise/).count()) > 0))
 
   // --- Coach
   await page.getByRole('tab', { name: 'Coach' }).click()
   await page.getByLabel('Frag deinen Coach …').waitFor()
-  check('Ohne Schlüssel wird zum Eintragen aufgefordert', (await page.getByText(/Trage deinen OpenRouter-Schlüssel ein/).count()) > 0)
+  check('Ohne Schlüssel wird zum Eintragen aufgefordert', await eventually(async () => (await page.getByText(/Trage deinen OpenRouter-Schlüssel ein/).count()) > 0))
   check('Eingabe ist ohne Schlüssel deaktiviert', await page.getByLabel('Frag deinen Coach …').isDisabled())
   // wirklich Zeichen für Zeichen tippen: das Feld darf dabei weder Zeichen verlieren noch zuklappen
   await page.getByLabel('OpenRouter-API-Schlüssel').pressSequentially('sk-or-v1-testkey', { delay: 25 })
