@@ -68,6 +68,75 @@ export const de = {
     advisorKey: 'OpenRouter-API-Schlüssel', advisorModel: 'Modell', advisorHint: 'Der Schlüssel bleibt nur auf diesem Gerät.',
     exercisesLoaded: 'Übungen in der Datenbank', sources: 'Quellen der Übungsdaten',
   },
+
+  advisor: {
+    title: 'Advisor',
+    tabs: { plan: 'Planer', hints: 'Hinweise', coach: 'Coach' },
+    plan: {
+      intro: 'Beantworte ein paar Fragen, dann erstelle ich dir einen Plan nach den Regeln der Trainingsplanung.',
+      goal: 'Ziel', level: 'Niveau', days: 'Trainingstage pro Woche', minutes: 'Zeit pro Einheit (Min.)', machines: 'Geräteübungen bevorzugen',
+      create: 'Plan erstellen', save: 'Als Routinen speichern', saved: 'Routinen gespeichert.', why: 'Warum dieser Plan?', weekly: 'Wiederholungen pro Woche',
+      sessions: 'Einheiten', estimate: 'ca. {{min}} Min.', setsReps: '{{sets}} × {{min}}–{{max}}', rest: 'Pause {{sec}} s', perWeek: '{{n}}× pro Woche',
+    },
+    goals: { strength: 'Kraft', hypertrophy: 'Muskelaufbau', endurance: 'Kraftausdauer', general: 'Allgemeine Fitness' },
+    levels: { beginner: 'Engagierter Anfänger', advanced: 'Fortgeschritten', pro: 'Profi', hobby: 'Hobby (fit bleiben)' },
+    session: { fullbody: 'Ganzkörper', upper: 'Oberkörper', lower: 'Unterkörper', push: 'Push', pull: 'Pull', legs: 'Beine' },
+    groups: { chest: 'Brust', back: 'Rücken', shoulders: 'Schultern', biceps: 'Bizeps', triceps: 'Trizeps', quads: 'Quadrizeps', hams: 'Beinbeuger', glutes: 'Gesäß', calves: 'Waden', core: 'Rumpf' },
+    reasons: {
+      consistency: 'Beständigkeit ist die Basis: Der beste Plan ist der, den du dauerhaft durchhältst. Plane die Tage so, dass sie in deinen Alltag passen.',
+      split: {
+        single: 'Bei nur einem Tag pro Woche bleibt nur ein Ganzkörpertraining.',
+        fullbody: 'Bei {{days}} Tagen pro Woche ist Ganzkörpertraining sinnvoll: So wird jede Muskelgruppe regelmäßig gereizt und die Erholung bleibt ausreichend.',
+        upperlower: 'Bei 4 Tagen passt ein Oberkörper-/Unterkörper-Split: Jede Muskelgruppe kommt 2× pro Woche dran.',
+        ppl5: 'Bei 5 Tagen kombiniert der Plan Push/Pull/Beine mit Oberkörper und Unterkörper, damit die großen Gruppen 2× pro Woche trainiert werden.',
+        ppl6: 'Bei 6 Tagen läuft ein Push/Pull/Beine-Split zweimal pro Woche, so wird jede Muskelgruppe 2× trainiert.',
+      },
+      volume: 'Das Volumen richtet sich nach deinem Niveau: {{lo}}–{{hi}} Wiederholungen pro Woche für große Muskelgruppen (kleine etwas weniger, da sie bei Grundübungen mitarbeiten).',
+      intensity: {
+        strength: 'Kraft: Grundübungen im Bereich 1–6 Wdh. (80–100 % 1RM), ergänzende Übungen höher ({{lo}}–{{hi}} Wdh.).',
+        hypertrophy: 'Muskelaufbau: 6–12 Wdh. bei 60–85 % des 1RM; schwere Grundübungen zuerst, Isolation später bis maximal 15 Wdh.',
+        endurance: 'Kraftausdauer: 13–30 Wdh. bei etwa 30–60 % des 1RM.',
+        general: 'Allgemeine Fitness: moderate Bereiche von 8–15 Wdh., schwere Grundübungen zuerst, Isolation zum Schluss.',
+      },
+      order: 'Reihenfolge: erst die schweren Grundübungen (mit frischer Kraft), danach Isolationsübungen.',
+      selection: {
+        machines: 'Geräteübungen sind ein guter Einstieg: leicht zu erlernen, stabil und ohne Hilfsperson nutzbar. Der Hypertrophiereiz ist vergleichbar mit freien Grundübungen.',
+        free: 'Freie Grundübungen (Kniebeuge, Bankdrücken, Rudern, Kreuzheben) bilden die Basis; Isolations- und Geräteübungen ergänzen gezielt.',
+      },
+      progression: {
+        linear: 'Progression: Steigere das Gewicht in kleinen Schritten (z. B. 2,5 kg), sobald alle Sätze sauber gelingen (lineare Progression).',
+        double: 'Progression: Doppelte Progression. Erst die Wiederholungen bis zur oberen Grenze steigern, dann das Gewicht erhöhen und wieder unten beginnen.',
+      },
+      rest: 'Pausen: 3–5 Min. bei schweren Sätzen (1–6 Wdh.), 1–2 Min. bei Isolationsübungen. Wichtig ist, dass der nächste Satz mit halbwegs erholter Kraft gelingt.',
+      tempo: {
+        beginner: 'Tempo: kontrolliert, etwa 3/0/1/1 (3 Sek. ablassen, 1 Sek. drücken, 1 Sek. oben). Das hilft, Technik und Muskelgefühl zu lernen.',
+        standard: 'Tempo: etwa 2/0/1/1, also kontrolliert ablassen und zügig, aber sauber drücken.',
+      },
+      deload: 'Plane nach 4–5 Wochen eine Entlastungswoche (Deload): Sätze um etwa 50 % bzw. mindestens einen Satz kürzen.',
+      warn: {
+        frequency: 'Mit nur einem Trainingstag wird jede Muskelgruppe nur 1× pro Woche trainiert. Optimal wären 2–3×.',
+        time: 'Eine Einheit dauert voraussichtlich {{min}} Minuten und überschreitet dein Zeitbudget.',
+        short: 'Bei unter 40 Minuten pro Einheit bleibt wenig Volumen pro Muskelgruppe. Mehr Trainingstage können das ausgleichen.',
+      },
+    },
+    hints: {
+      title: 'Hinweise zu deinem Training', empty: 'Noch keine Hinweise. Trainiere ein paar Wochen, dann werte ich dein Logbuch aus.',
+      progressUp: '{{name}}: Beim letzten Mal waren alle Sätze am oberen Ende ({{hi}} Wdh.). Nächstes Mal: {{weight}} {{unit}} × {{reps}}.',
+      progressStay: '{{name}}: Bleibe bei {{weight}} {{unit}} und versuche {{reps}} Wdh. (Ziel: {{lo}}–{{hi}}).',
+      plateau: '{{name}}: Seit {{sessions}} Einheiten kein Fortschritt. Prüfe Technik, Schlaf und Ernährung, erhöhe das Volumen oder plane eine Entlastungswoche.',
+      volumeLow: '{{group}}: Diese Woche nur {{reps}} Wdh. (Richtwert {{lo}}–{{hi}}). Plane mehr Sätze ein.',
+      volumeHigh: '{{group}}: Diese Woche {{reps}} Wdh. (Richtwert {{lo}}–{{hi}}). Achte auf ausreichende Regeneration.',
+      frequencyLow: '{{group}}: Nur etwa {{perWeek}}× pro Woche trainiert. 2–3× sind optimal.',
+      frequencyHigh: '{{group}}: Etwa {{perWeek}}× pro Woche trainiert. Zwischen zwei Einheiten sollten 48–72 Stunden liegen.',
+      deload: 'Du trainierst seit {{weeks}} Wochen ohne Entlastung. Plane eine Deload-Woche: etwa 50 % weniger Sätze, Gewichte wie zu Beginn des Zyklus.',
+    },
+    coach: {
+      title: 'Coach', keyMissing: 'Trage deinen OpenRouter-Schlüssel ein, um den Coach zu nutzen.', settings: 'Verbindung', modelLabel: 'Modell', loadModels: 'Modelle laden',
+      share: 'Trainingsdaten teilen', placeholder: 'Frag deinen Coach …', send: 'Senden', stop: 'Stopp', clear: 'Neuer Chat', error: 'Fehler',
+      disclaimer: 'Der Coach ersetzt keine ärztliche oder physiotherapeutische Beratung. Es werden nur Daten gesendet, die du freigibst.',
+      starters: { review: 'Beurteile mein Training der letzten Wochen.', bench: 'Wie steigere ich mein Bankdrücken?', plan: 'Welche Übungen fehlen in meinem Plan?', deload: 'Brauche ich bald eine Deload-Woche?' },
+    },
+  },
   pwa: { offlineReady: 'Offline bereit', update: 'Neue Version verfügbar' },
 }
 export type Dict = typeof de

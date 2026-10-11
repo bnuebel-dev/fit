@@ -50,6 +50,8 @@ export async function startWorkout(opts: StartOptions = {}): Promise<number> {
     items = opts.routine.items.map((i) => ({
       exerciseId: i.exerciseId,
       restSec: i.restSec,
+      targetReps: i.reps,
+      ...(i.repsMax !== undefined ? { targetRepsMax: i.repsMax } : {}),
       ...(i.supersetGroup !== undefined ? { supersetGroup: i.supersetGroup } : {}),
     }))
     planned = opts.routine.items.map((i) => ({ exerciseId: i.exerciseId, sets: i.sets, reps: i.reps }))

@@ -34,7 +34,10 @@ export interface Exercise {
 export interface RoutineItem {
   exerciseId: string
   sets: number
+  /** Ziel-Wiederholungen (untere Grenze des Bereichs) */
   reps: number
+  /** obere Grenze des Wiederholungsbereichs (für doppelte Progression) */
+  repsMax?: number
   restSec: number
   supersetGroup?: number
 }
@@ -52,6 +55,8 @@ export interface Routine {
 export interface WorkoutItem {
   exerciseId: string
   restSec: number
+  targetReps?: number
+  targetRepsMax?: number
   supersetGroup?: number
   note?: string
 }

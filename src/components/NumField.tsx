@@ -17,7 +17,7 @@ export function NumField({
     <input
       aria-label={label}
       inputMode="decimal"
-      className={`min-h-11 w-full rounded-xl bg-surface2 px-2 text-center text-base outline-none focus:ring-2 focus:ring-accent ${className}`}
+      className={`min-h-11 w-full rounded-xl bg-surface2 px-2 text-center text-base text-fg outline-none focus:ring-2 focus:ring-accent ${className}`}
       value={text}
       step={step}
       onFocus={(e) => {
