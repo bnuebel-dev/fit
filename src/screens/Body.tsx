@@ -34,7 +34,7 @@ export function Body() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t('body.title')}</h1>
+        <h1 className="text-3xl font-extrabold">{t('body.title')}</h1>
         <button className="btn btn-primary" onClick={() => setEditing({ date: todayIso(), values: {} })}>+ {t('body.newEntry')}</button>
       </div>
 

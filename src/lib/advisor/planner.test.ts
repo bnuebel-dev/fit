@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { createPlan, estimateMinutes, templateFor, type Goal, type Level } from './planner'
+import { createPlan, estimateMinutes, suggestWeekdays, templateFor, type Goal, type Level } from './planner'
 import { allSlotIds, GROUP_SIZE, SLOTS } from './slots'
 import type { Exercise, Muscle } from '../../types'
 
@@ -148,5 +148,23 @@ describe('createPlan', () => {
   it('estimateMinutes', () => {
     expect(estimateMinutes([])).toBe(8)
     expect(estimateMinutes([{ sets: 3, restSec: 135 }])).toBe(17)
+  })
+})
+
+describe('suggestWeekdays', () => {
+  it('liefert pro Tag einen Wochentag, aufsteigend und ohne Doppelungen', () => {
+    for (let d = 1; d <= 6; d++) {
+      const w = suggestWeekdays(d)
+      expect(w).toHaveLength(d)
+      expect(new Set(w).size).toBe(d)
+      expect([...w].sort((a, b) => a - b)).toEqual(w)
+      expect(w.every((x) => x >= 1 && x <= 7)).toBe(true)
+    }
+  })
+  it('bei 2 und 3 Tagen liegt mindestens ein Ruhetag dazwischen (Ganzkörper braucht 48 h)', () => {
+    for (const d of [2, 3]) {
+      const w = suggestWeekdays(d)
+      for (let i = 1; i < w.length; i++) expect(w[i] - w[i - 1]).toBeGreaterThanOrEqual(2)
+    }
   })
 })

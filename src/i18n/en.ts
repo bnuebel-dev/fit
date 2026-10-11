@@ -1,7 +1,7 @@
 import type { Dict } from './de'
 
 export const en: Dict = {
-  nav: { workout: 'Workout', stats: 'Statistics', history: 'History', body: 'Body', more: 'More' },
+  nav: { workout: 'Workout', advisor: 'Advisor', stats: 'Statistics', history: 'History', body: 'Body', more: 'More' },
   common: {
     save: 'Save', cancel: 'Cancel', delete: 'Delete', edit: 'Edit', add: 'Add',
     back: 'Back', search: 'Search', ok: 'OK', close: 'Close', none: 'None', all: 'All',
@@ -57,7 +57,7 @@ export const en: Dict = {
   },
   more: {
     title: 'More', exercises: 'Exercises', oneRm: '1RM calculator', plates: 'Plate calculator', stopwatch: 'Stopwatch',
-    settings: 'Settings', knowledge: 'Knowledge', strengthLevel: 'Strength level', energy: 'Energy, macros and heart rate', advisor: 'Advisor', calculators: 'Tools', about: 'About Fit',
+    settings: 'Settings', knowledge: 'Knowledge', strengthLevel: 'Strength level', energy: 'Energy, macros and heart rate', body: 'Body', advisor: 'Advisor', calculators: 'Tools', about: 'About Fit',
   },
   tools: {
     oneRmTitle: '1RM calculator', oneRmHint: 'Enter weight and reps of one set.', est1rm: 'Estimated 1RM', percent: '%',
@@ -158,8 +158,34 @@ export const en: Dict = {
       title: 'Coach', keyMissing: 'Enter your OpenRouter key to use the coach.', settings: 'Connection', modelLabel: 'Model', loadModels: 'Load models',
       share: 'Share training data', placeholder: 'Ask your coach …', send: 'Send', stop: 'Stop', clear: 'New chat', error: 'Error',
       disclaimer: 'The coach does not replace medical or physiotherapy advice. Only data you choose to share is sent.',
-      starters: { review: 'Review my training of the last weeks.', bench: 'How can I increase my bench press?', plan: 'Which exercises are missing in my plan?', deload: 'Do I need a deload week soon?' },
+      starters: { review: 'Review my training of the last weeks.', bench: 'How can I increase my bench press?', plan: 'Ask me questions about my training and build a plan from my answers.', deload: 'Do I need a deload week soon?' },
     },
+  },
+  wizard: {
+    title: 'Plan in question-and-answer mode', intro: 'Five short questions, then I build you a plan using the rules of training planning. Each question says why I ask it.',
+    start: 'Let’s go', step: 'Question {{n}} of {{total}}', why: 'Why do I ask this?', back: 'Back', restart: 'Start over', next: 'Next', showPlan: 'Create plan',
+    summary: 'Your plan at a glance', change: 'Change answers', refine: 'Refine with the coach', refineHint: 'Opens the coach with your plan so you can ask questions and discuss changes (needs an OpenRouter key).',
+    refineMessage: 'Here is my training plan. Please review it and suggest improvements.',
+    result: '{{days}} days per week, {{split}}, about {{minutes}} minutes, goal {{goal}}',
+    splits: { single: 'Full body', fullbody: 'Full body', upperlower: 'Upper/lower', ppl5: 'Push/pull/legs plus upper/lower', ppl6: 'Push/pull/legs' },
+    q: {
+      goal: { title: 'What is your main goal?', why: 'The goal sets rep range and intensity: strength 1 to 6 reps, muscle growth 6 to 12, muscular endurance 13 to 30. (Training science, module 7)',
+        hypertrophy: ['Muscle growth', 'More muscle mass and shape'], strength: ['Strength', 'Move heavier weights'], endurance: ['Muscular endurance', 'Last longer, higher reps'], general: ['General fitness', 'Healthy and resilient, no specific goal'] },
+      experience: { title: 'How much training experience do you have?', why: 'Level determines sensible volume and progression: beginners raise the weight from session to session, advanced lifters more week to week. (modules 7 and 9)',
+        new: ['New to it', 'Under 6 months of strength training'], some: ['A few months to 2 years', 'Training regularly, weights still going up'], years: ['Several years', 'Progress only in small steps now'], casual: ['Casual', 'Staying fit with relaxed training'] },
+      days: { title: 'How many days per week can you train?', why: 'The number of days decides the split: up to 3 days full body, 4 days upper/lower, 5 to 6 days push/pull/legs. Pick what you can really keep up: consistency is the foundation. (module 9)',
+        d1: ['1 day', 'Full body (little, but better than nothing)'], d2: ['2 days', 'Full body'], d3: ['3 days', 'Full body'], d4: ['4 days', 'Upper/lower'], d5: ['5 days', 'Push/pull/legs plus upper/lower'], d6: ['6 days', 'Push/pull/legs, twice a week'] },
+      minutes: { title: 'How much time do you have per session?', why: 'Time determines how many exercises and sets fit in. Rest is included: 3 to 5 minutes for heavy sets, 1 to 2 minutes for isolation. (module 9)',
+        m30: ['30 minutes', 'Short and compact'], m45: ['45 minutes', 'Very doable'], m60: ['60 minutes', 'The classic'], m75: ['75 minutes', 'More volume'], m90: ['90 minutes', 'Plenty of time'] },
+      equipment: { title: 'What do you prefer to train with?', why: 'Machine exercises are a good start (easy to learn, stable, no spotter needed). Free compound lifts form the base of advanced plans. Both work well for muscle growth. (module 9, exercise selection)',
+        machines: ['Machines', 'Machines and cables, easy to learn'], free: ['Free weights', 'Barbell, dumbbell, bodyweight'] },
+    },
+  },
+  home: {
+    welcomeTitle: 'Welcome to Fit', welcomeText: 'Start with a plan that I put together using the rules of training planning. I only need five answers.',
+    createPlan: 'Create a plan (5 questions)', explore: 'Explore knowledge', thisWeek: 'This week', workouts: 'Workouts', sets: 'Sets', volume: 'Volume', lastWorkout: 'Last workout',
+    today: 'Today', startToday: 'Start', tip: 'Advisor tip', openAdvisor: 'Open advisor', quick: 'Quick access', noWorkoutsYet: 'No workout yet',
+    planCardTitle: 'Create a new plan', planCardText: 'Question-and-answer mode with explanations',
   },
   pwa: { offlineReady: 'Ready to work offline', update: 'New version available' },
 }

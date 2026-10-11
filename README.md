@@ -8,7 +8,7 @@ Alle Daten bleiben lokal auf dem Gerät (IndexedDB), Backup per JSON-Export. Die
 - **Training:** Routinen, Live-Training mit Vorwerten, Supersätze, Aufwärm-/Drop-/Versagenssätze, RPE, Pausentimer, Rekorde
 - **Übungen:** 977 Übungen mit deutschen Namen, Muskelgrafik, Bildern, Geräteübungen aus dem Skript, eigene Übungen
 - **Statistik und Verlauf**, Körperdaten, Backup
-- **Advisor:** regelbasierter Planer (Stufe 1), Fortschrittshinweise aus dem Logbuch (Stufe 2), KI-Coach über OpenRouter (Stufe 3, eigener Schlüssel)
+- **Advisor** (eigener Tab): Planer im Frage-Antwort-Modus mit Begründung zu jeder Frage (Stufe 1), mit Übergabe an den Coach; regelbasierter Planer, Fortschrittshinweise aus dem Logbuch (Stufe 2), KI-Coach über OpenRouter (Stufe 3, eigener Schlüssel)
 - **Wissen:** 16 Artikel und ein Glossar, dazu Rechner für 1RM, Kraftlevel, Energie/Makros/BMI, Trainingspuls und Hantelscheiben
 
 ## Auf dem Handy installieren

@@ -20,7 +20,7 @@ export function Exercises() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
         <button className="btn" onClick={() => nav('/more')} aria-label={t('common.back')}>←</button>
-        <h1 className="text-2xl font-bold">{creating ? t('exercises.create') : t('exercises.title')}</h1>
+        <h1 className="text-3xl font-extrabold">{creating ? t('exercises.create') : t('exercises.title')}</h1>
       </div>
       {creating
         ? <CustomExerciseForm onDone={(e) => { setCreating(false); if (e) nav(`/more/exercises/${e.id}`) }} />
