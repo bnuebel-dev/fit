@@ -13,7 +13,7 @@ import { exName } from '../lib/names'
 import { useRest } from '../lib/restTimer'
 import { useSettings } from '../lib/settings'
 import { useExerciseMap } from '../lib/useExercises'
-import { addExercise, addSet, bestE1rm, discardWorkout, finishWorkout, getActiveWorkout, previousSets, removeExercise, type Summary } from '../lib/workout'
+import { addExercise, addSet, addWarmups, bestE1rm, discardWorkout, finishWorkout, getActiveWorkout, previousSets, removeExercise, type Summary } from '../lib/workout'
 import type { Exercise, SetLog, SetType, Units, Workout, WorkoutItem } from '../types'
 
 const TYPE_ORDER: SetType[] = ['normal', 'warmup', 'drop', 'failure']
@@ -127,6 +127,9 @@ function ExerciseCard({ workout, item, index, name, image, units, linkedPrev, li
   }
   const alreadyApplied = !!suggestion && open.length > 0 && open.every((x) => x.weight === suggestion.weight && x.reps === suggestion.reps)
 
+  // Arbeitsgewicht für die Aufwärmrampe: erster offener Arbeitssatz, sonst letzte Einheit
+  const workKg = (sets ?? []).find((x) => x.type !== 'warmup' && x.weight > 0)?.weight ?? Math.max(0, ...(prev ?? []).filter((x) => x.type !== 'warmup').map((x) => x.weight))
+
   const update = (s: SetLog, p: Partial<SetLog>) => db.sets.update(s.id!, p)
   const toggleDone = async (s: SetLog) => {
     const done = s.done ? 0 : 1
@@ -195,6 +198,9 @@ function ExerciseCard({ workout, item, index, name, image, units, linkedPrev, li
             <label className="text-sm text-muted">{t('workout.rest')}
               <NumField className="mt-1" value={item.restSec} onCommit={(v) => void updateItem({ restSec: Math.round(v) })} label={t('workout.rest')} />
             </label>
+            {workKg >= 20 && !(sets ?? []).some((x) => x.type === 'warmup') && (
+              <button className="btn" onClick={async () => { await addWarmups(wid, item.exerciseId, workKg); setMenu(false) }}>{t('workout.addWarmups')}</button>
+            )}
             <button className="btn" onClick={() => { setShowRpe((v) => !v); setMenu(false) }}>{t('workout.rpe')}</button>
             {index < workout.items.length - 1 && <button className="btn" onClick={toggleSuperset}>{t('workout.superset')}{linkedNext ? ' ✓' : ''}</button>}
             <button className="btn btn-danger" onClick={() => { void removeExercise(wid, item.exerciseId); setMenu(false) }}>{t('workout.removeExercise')}</button>

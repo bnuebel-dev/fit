@@ -10,6 +10,7 @@ export const de = {
     title: 'Training', routines: 'Routinen', newRoutine: 'Neue Routine', startEmpty: 'Leeres Training starten',
     resume: 'Training läuft – fortsetzen', lastDone: 'Zuletzt', never: 'Noch nie', noRoutines: 'Lege deine erste Routine an oder starte ein leeres Training.',
     routineName: 'Name der Routine', color: 'Farbe', weekday: 'Wochentag', addExercise: 'Übung hinzufügen',
+    addWarmups: 'Aufwärmsätze einfügen', 
     targetSets: 'Sätze', targetReps: 'Wdh.', rest: 'Pause (s)', superset: 'Supersatz mit nächster Übung',
     finish: 'Beenden', discard: 'Verwerfen', discardConfirm: 'Training verwerfen? Alle Eingaben gehen verloren.',
     addSet: 'Satz hinzufügen', previous: 'Zuletzt', set: 'Satz', kg: 'kg', lb: 'lb', rpe: 'RPE',
@@ -48,8 +49,19 @@ export const de = {
     volume: 'Volumen', sets: 'Sätze', reps: 'Wdh.', avg: 'Ø', max: 'Max', sum: 'Summe', trend: 'Trend', muscles: 'Muskelverteilung',
     volumeOverTime: 'Volumen pro Woche', records: 'Rekorde', noData: 'Im Zeitraum keine Trainings.',
   },
+  insights: {
+    kcal: 'Verbrauch (geschätzt, kcal)', kcalNote: 'Schätzung aus Dauer, Satzdichte und Körpergewicht (MET-Werte). Ohne Messung per Pulsuhr nur ein Richtwert.',
+    kcalPerWeek: 'Geschätzter Verbrauch pro Woche (kcal)',
+    reportTitle: 'Wochenbericht', reportHint: 'Diese Woche gegenüber der letzten', thisWeek: 'Diese', lastWeek: 'Letzte', workouts: 'Trainings',
+    goal: 'Wochenziel', goalSetting: 'Wochenziel (Trainings pro Woche)', streak: 'Serie', streakWeeks_one: '{{count}} Woche in Folge', streakWeeks_other: '{{count}} Wochen in Folge',
+    topMuscles: 'Meist belastet', calendar: 'Trainingskalender', prevMonth: 'Voriger Monat', nextMonth: 'Nächster Monat', trainedDays_one: '{{count}} Trainingstag', trainedDays_other: '{{count}} Trainingstage',
+  },
+  photos: {
+    title: 'Fotobuch', add: 'Foto', photo: 'Foto', compare: 'Vergleichen', compareHint: 'Wähle zwei Fotos ({{n}} von 2).', empty: 'Noch keine Fotos. Sie bleiben auf deinem Gerät und sind im Backup enthalten.',
+    error: 'Das Foto konnte nicht verarbeitet werden.',
+  },
   body: {
-    title: 'Körper', weight: 'Körpergewicht', height: 'Größe', chest: 'Brust', waist: 'Taille', hips: 'Hüfte', bicepsL: 'Bizeps links',
+    chartMetric: 'Messwert', title: 'Körper', weight: 'Körpergewicht', height: 'Größe', chest: 'Brust', waist: 'Taille', hips: 'Hüfte', bicepsL: 'Bizeps links',
     bicepsR: 'Bizeps rechts', thighL: 'Oberschenkel links', thighR: 'Oberschenkel rechts', neck: 'Hals', shoulders: 'Schultern',
     newEntry: 'Neuer Eintrag', history: 'Verlauf', bmi: 'BMI', date: 'Datum', empty: 'Noch keine Einträge.', cm: 'cm',
   },

@@ -92,6 +92,14 @@ export interface BodyEntry {
   values: Record<string, number>
 }
 
+export interface Photo {
+  id?: number
+  date: string // YYYY-MM-DD
+  /** verkleinertes JPEG als Data-URL (bleibt so im JSON-Backup enthalten) */
+  data: string
+  note?: string
+}
+
 export type Lang = 'de' | 'en'
 export type Units = 'kg' | 'lb'
 export type Theme = 'system' | 'light' | 'dark'
@@ -103,4 +111,6 @@ export interface Settings {
   restDefault: number
   advisorKey: string
   advisorModel: string
+  /** Trainings pro Woche, die das Wochenziel ausmachen */
+  weeklyGoal: number
 }

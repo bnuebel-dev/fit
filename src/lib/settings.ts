@@ -14,6 +14,7 @@ export function defaultSettings(): Settings {
     restDefault: 120,
     advisorKey: '',
     advisorModel: 'anthropic/claude-sonnet-4.5',
+    weeklyGoal: 3,
   }
 }
 

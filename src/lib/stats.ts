@@ -1,5 +1,6 @@
 import type { Exercise, Muscle, SetLog, Workout } from '../types'
 import { e1rm, setVolume } from './calc'
+import { DEFAULT_BODY_KG, workoutKcal } from './calories'
 
 export interface WorkoutStat {
   id: number
@@ -8,6 +9,7 @@ export interface WorkoutStat {
   sets: number
   reps: number
   volume: number
+  kcal: number
 }
 
 export type Period = 'week' | 'm1' | 'm3' | 'y1' | 'all'
@@ -23,7 +25,8 @@ export function periodStart(period: Period, now: number): number {
   }
 }
 
-export function workoutStats(workouts: Workout[], sets: SetLog[]): WorkoutStat[] {
+/** `bodyKgAt` liefert das Körpergewicht zum Zeitpunkt der Einheit (für die Kalorienschätzung). */
+export function workoutStats(workouts: Workout[], sets: SetLog[], bodyKgAt: (ts: number) => number = () => DEFAULT_BODY_KG): WorkoutStat[] {
   const byWorkout = new Map<number, SetLog[]>()
   for (const s of sets) {
     if (!s.done) continue
@@ -42,12 +45,13 @@ export function workoutStats(workouts: Workout[], sets: SetLog[]): WorkoutStat[]
         sets: ws.length,
         reps: ws.reduce((a, s) => a + s.reps, 0),
         volume: ws.reduce((a, s) => a + setVolume(s), 0),
+        kcal: workoutKcal(w.endedAt! - w.startedAt, ws.length, bodyKgAt(w.startedAt)),
       }
     })
     .sort((a, b) => a.startedAt - b.startedAt)
 }
 
-export type Metric = 'durationMs' | 'volume' | 'sets' | 'reps'
+export type Metric = 'durationMs' | 'volume' | 'sets' | 'reps' | 'kcal'
 export interface MetricSummary { sum: number; max: number; min: number; avg: number }
 
 export function summarize(list: WorkoutStat[], metric: Metric): MetricSummary {
@@ -75,6 +79,12 @@ export function weeklyVolume(list: WorkoutStat[]): { weekStart: number; volume: 
   const map = new Map<number, number>()
   for (const w of list) map.set(weekStart(w.startedAt), (map.get(weekStart(w.startedAt)) ?? 0) + w.volume)
   return [...map.entries()].sort((a, b) => a[0] - b[0]).map(([ws, volume]) => ({ weekStart: ws, volume }))
+}
+
+export function weeklyMetric(list: WorkoutStat[], metric: Metric): { weekStart: number; value: number }[] {
+  const map = new Map<number, number>()
+  for (const w of list) map.set(weekStart(w.startedAt), (map.get(weekStart(w.startedAt)) ?? 0) + w[metric])
+  return [...map.entries()].sort((a, b) => a[0] - b[0]).map(([ws, value]) => ({ weekStart: ws, value }))
 }
 
 /** Anteil je Muskelgruppe: Hauptmuskel zählt je Satz 1, Hilfsmuskeln 0,5. */

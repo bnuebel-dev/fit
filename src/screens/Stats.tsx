@@ -1,14 +1,14 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { db } from '../db'
 import { formatDuration, toDisplay } from '../lib/calc'
 import { useLang } from '../lib/hooks'
 import { MuscleMap } from '../components/MuscleMap'
+import { WeekReport } from '../components/WeekReport'
+import { useTraining } from '../lib/useTraining'
 import { exName } from '../lib/names'
 import { useSettings } from '../lib/settings'
-import { bestByExercise, muscleShare, periodStart, summarize, trend, weeklyVolume, workoutStats, type Metric, type Period } from '../lib/stats'
+import { bestByExercise, muscleShare, periodStart, summarize, trend, weeklyMetric, weeklyVolume, type Metric, type Period } from '../lib/stats'
 import { useExerciseMap } from '../lib/useExercises'
 import { MUSCLES } from '../types'
 
@@ -22,23 +22,24 @@ export function Stats() {
   const units = useSettings()?.units ?? 'kg'
   const exMap = useExerciseMap()
   const [period, setPeriod] = useState<Period>('m3')
-  const data = useLiveQuery(async () => ({ workouts: await db.workouts.toArray(), sets: await db.sets.toArray() }), [])
+  const data = useTraining()
 
   const view = useMemo(() => {
     if (!data) return null
     const now = Date.now()
     const from = periodStart(period, now)
     const span = period === 'all' ? 0 : now - from
-    const all = workoutStats(data.workouts, data.sets)
+    const all = data.stats
     const cur = all.filter((w) => w.startedAt >= from)
     const prev = span ? all.filter((w) => w.startedAt >= from - span && w.startedAt < from) : []
     const ids = new Set(cur.map((w) => w.id))
     const curSets = data.sets.filter((s) => ids.has(s.workoutId))
-    return { cur, prev, curSets, weekly: weeklyVolume(cur), share: muscleShare(curSets, exMap), best: bestByExercise(curSets) }
+    return { cur, prev, curSets, weekly: weeklyVolume(cur), weeklyKcal: weeklyMetric(cur, 'kcal'), share: muscleShare(curSets, exMap), best: bestByExercise(curSets) }
   }, [data, period, exMap])
 
   const rows: { key: Metric; label: string; fmt: (v: number) => string }[] = [
     { key: 'durationMs', label: t('stats.time'), fmt: (v) => formatDuration(v) },
+    { key: 'kcal', label: t('insights.kcal'), fmt: (v) => `≈ ${Math.round(v)}` },
     { key: 'volume', label: t('stats.volume'), fmt: (v) => `${Math.round(toDisplay(v, units))}` },
     { key: 'sets', label: t('stats.sets'), fmt: (v) => String(Math.round(v * 10) / 10) },
     { key: 'reps', label: t('stats.reps'), fmt: (v) => String(Math.round(v)) },
@@ -54,6 +55,8 @@ export function Stats() {
           <button key={p} role="tab" aria-selected={period === p} className={`chip shrink-0 !px-4 !py-2 text-sm ${period === p ? '!bg-accent !text-accent-fg' : ''}`} onClick={() => setPeriod(p)}>{t(`stats.${p}`)}</button>
         ))}
       </div>
+
+      {data && <WeekReport workouts={data.workouts} sets={data.sets} stats={data.stats} />}
 
       {!view && <p className="text-muted">{t('common.loading')}</p>}
       {view && view.cur.length === 0 && <p className="text-muted">{t('stats.noData')}</p>}
@@ -71,7 +74,7 @@ export function Stats() {
                   const tr = view.prev.length ? trend(s.avg, summarize(view.prev, r.key).avg) : 0
                   return (
                     <tr key={r.key} className="border-t border-line text-center">
-                      <td className="py-2 text-left text-muted">{r.label}</td><td>{r.fmt(s.sum)}</td><td>{r.fmt(s.max)}</td><td>{r.fmt(s.avg)}</td>
+                      <td className="py-2 text-left text-muted">{r.label}</td><td className="whitespace-nowrap px-1.5">{r.fmt(s.sum)}</td><td className="whitespace-nowrap px-1.5">{r.fmt(s.max)}</td><td className="whitespace-nowrap px-1.5">{r.fmt(s.avg)}</td>
                       <td className={ARROW_CLS[tr]} aria-label={String(tr)}>{ARROW[tr]}</td>
                     </tr>
                   )
@@ -90,6 +93,22 @@ export function Stats() {
                   <YAxis tick={{ fontSize: 11, fill: 'var(--color-muted)' }} width={44} />
                   <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-line)', borderRadius: 12 }} />
                   <Bar dataKey="volume" fill="var(--color-accent)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="card p-3">
+            <h2 className="mb-1 font-semibold">{t('insights.kcalPerWeek')}</h2>
+            <p className="mb-2 text-xs text-muted">{t('insights.kcalNote')}</p>
+            <div className="h-44">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={view.weeklyKcal.map((w) => ({ week: fmtWeek(w.weekStart), kcal: Math.round(w.value) }))}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-line)" vertical={false} />
+                  <XAxis dataKey="week" tick={{ fontSize: 11, fill: 'var(--color-muted)' }} />
+                  <YAxis tick={{ fontSize: 11, fill: 'var(--color-muted)' }} width={44} />
+                  <Tooltip contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-line)', borderRadius: 12 }} />
+                  <Bar dataKey="kcal" fill="var(--color-warn)" radius={[6, 6, 0, 0]} isAnimationActive={false} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
