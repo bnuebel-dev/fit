@@ -139,18 +139,18 @@ Modul 3 fehlt im Upload und wird bei Bedarf nachgereicht.
 
 ## 10. Stand der Umsetzung
 
-- [x] 1 Gerüst: Vite/React/TS, PWA, Navigation, i18n (de/en), Dexie-Schema, Backup-Export/-Import
+- [x] 1 Gerüst: Vite/React/TS, PWA (offline getestet), Navigation, i18n (de/en), Dexie-Schema, Backup-Export/-Import
 - [x] 2 Kern-Tracking: Routinen, Live-Training, Vorwerte, Pausentimer, Verlauf, Rekorde
-- [~] 3 Übungsdatenbank: 970 Übungen mit deutschen Namen importiert; offen: Abdeckung nach PDFs, Muskelgrafik, deutsche Anleitungen
-- [x] 4 Statistik (Basis): Kennzahlen, Wochenvolumen, Muskelverteilung, Rekorde
-- [ ] 5 Wissensbereich
-- [ ] 6 Advisor Stufe 1 und 2
+- [x] 3 Übungs-/Gerätedatenbank: 977 Übungen mit deutschen Namen, Abdeckung nach PDFs per Test gesichert, Muskelgrafik; offen: deutsche Anleitungen für alle Übungen (aktuell 184)
+- [x] 4 Statistik: Kennzahlen, Wochenvolumen, Muskelverteilung, Rekorde
+- [x] 5 Wissen: 16 Artikel und Glossar (de/en), Rechner (1RM, Kraftlevel, Energie/Makros/BMI, Puls, Hantelscheiben)
+- [x] 6 Advisor Stufe 1 (Planer) und 2 (Hinweise)
 - [~] 7 Körperdaten (ohne Fotobuch)
-- [ ] 8 Advisor Stufe 3
-- [ ] 9 Feinschliff
+- [x] 8 Advisor Stufe 3 (OpenRouter, eigener Schlüssel)
+- [~] 9 Feinschliff: Deployment per GitHub Pages vorbereitet; offen: Fotobuch, GymRun-Import, deutsche Anleitungen
 
 ## 11. Offene Fragen
 
 - Bilder komplett offline mitliefern oder bei Bedarf laden (Größe prüfen)?
-- GymRun-Historie: Das Backup (`gymapp.db`) war passwortgeschützt bzw. leer angekommen. Import ist ein späteres Extra.
+- GymRun-Historie: Das Backup (`gymapp.db`) war passwortgeschützt bzw. leer angekommen. Ein Import ist ein späteres Extra, falls ein CSV-Export oder eine lesbare Datenbank vorliegt.
 - Modul 3 des Skripts liegt nicht vor (nicht benötigt).

@@ -7,8 +7,8 @@ import { mkdirSync } from 'node:fs'
 const PORT = 4173
 const shots = process.env.SHOTS ?? 'e2e/shots'
 mkdirSync(shots, { recursive: true })
-const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
-const base = `http://localhost:${PORT}/`
+const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore', detached: true })
+const base = `http://localhost:${PORT}${process.env.VITE_BASE ?? '/'}`
 for (let i = 0; i < 50; i++) { try { if ((await fetch(base)).ok) break } catch { /* warten */ } await new Promise((r) => setTimeout(r, 200)) }
 
 let failed = 0
@@ -106,6 +106,6 @@ try {
   await page.screenshot({ path: `${shots}/error.png` }).catch(() => {})
 } finally {
   await browser.close()
-  server.kill()
+  try { process.kill(-server.pid) } catch { /* schon beendet */ }
 }
 process.exit(failed ? 1 : 0)

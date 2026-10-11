@@ -54,12 +54,33 @@ export const de = {
   },
   more: {
     title: 'Mehr', exercises: 'Übungen', oneRm: '1RM-Rechner', plates: 'Hantelscheiben-Rechner', stopwatch: 'Stoppuhr',
-    settings: 'Einstellungen', knowledge: 'Wissen', advisor: 'Advisor', calculators: 'Rechner', about: 'Über Fit',
+    settings: 'Einstellungen', knowledge: 'Wissen', strengthLevel: 'Kraftlevel', energy: 'Energie, Makros und Puls', advisor: 'Advisor', calculators: 'Rechner', about: 'Über Fit',
   },
   tools: {
     oneRmTitle: '1RM-Rechner', oneRmHint: 'Gewicht und Wiederholungen eines Satzes eintragen.', est1rm: 'Geschätztes 1RM', percent: '%',
     platesTitle: 'Hantelscheiben-Rechner', target: 'Zielgewicht', bar: 'Stange', perSide: 'Pro Seite', remainder: 'Rest', exact: 'Passt genau',
     stopwatchTitle: 'Stoppuhr', start: 'Start', stop: 'Stopp', reset: 'Zurücksetzen', lap: 'Runde',
+  strength: {
+    title: 'Kraftlevel', hint: 'Trage für jede Übung ein 1RM oder einen Satz (Gewicht und Wiederholungen) ein. Die Richtwerte stammen aus Powerlifting-Daten.',
+    sex: 'Geschlecht', male: 'Männlich', female: 'Weiblich', bodyWeight: 'Körpergewicht', fromBody: 'Aus deinen Körperdaten übernommen',
+    squat: 'Kniebeuge', bench: 'Bankdrücken', deadlift: 'Kreuzheben', press: 'Überkopfdrücken', weight: 'Gewicht', reps: 'Wdh.', est: '1RM ≈ {{v}} {{unit}}',
+    ratio: '{{r}}× Körpergewicht', beginner: 'Anfänger', advanced: 'Fortgeschritten', pro: 'Profi', next: 'Nächste Stufe ab {{v}} {{unit}}', top: 'Höchste Stufe erreicht', none: 'Noch nichts eingetragen',
+  },
+  energy: {
+    title: 'Energie, Makros und Puls', sex: 'Geschlecht', age: 'Alter', height: 'Größe (cm)', weight: 'Gewicht', work: 'Arbeit/Alltag', sport: 'Sport (Stunden pro Woche)',
+    sitting: 'Sitzend (Büro)', mixed: 'Sitzend, zeitweise gehend/stehend', standing: 'Überwiegend gehend/stehend', heavy: 'Körperlich anstrengend',
+    bmr: 'Grundumsatz', pal: 'Aktivitätsfaktor (PAL)', total: 'Gesamtbedarf', perDay: 'kcal pro Tag', goal: 'Ziel', maintain: 'Gewicht halten', lose: 'Abnehmen (etwa −15 %)', gain: 'Zunehmen (etwa +10 %)',
+    target: 'Zielwert', protein: 'Eiweiß', profile: 'Eiweißbedarf nach Profil', health: 'Gesundheitssport', beginner: 'Einsteiger Kraftsport', advanced: 'Fortgeschrittener Kraftsport', senior: 'Ältere Menschen',
+    macros: 'Makronährstoffe', carbs: 'Kohlenhydrate', fat: 'Fett', gramsPerDay: 'g pro Tag', bmi: 'BMI', under: 'Untergewicht', normal: 'Normalgewicht', over: 'Übergewicht', obese: 'Adipositas',
+    pulse: 'Trainingspuls', rest: 'Ruhepuls', intensity: 'Intensität (% HFmax)', hfmax: 'Maximale Herzfrequenz (geschätzt)', hollmann: 'Nach Hollmann', karvonen: 'Nach Karvonen', bpm: 'Schläge pro Minute',
+    disclaimer: 'Richtwerte, keine Ernährungs- oder medizinische Beratung. Bei Vorerkrankungen oder Medikamenten (z. B. Beta-Blocker) ärztlich abklären.',
+  },
+  },
+  knowledge: {
+    title: 'Wissen', search: 'Wissen durchsuchen', glossary: 'Glossar', glossaryHint: 'Fachbegriffe kurz erklärt', terms: 'Begriffe', empty: 'Nichts gefunden.',
+    notFound: 'Artikel nicht gefunden.', tool: 'Passendes Werkzeug', source: 'In eigenen Worten zusammengefasst nach den Grundlagen der Trainingslehre. Richtwerte, keine medizinische Beratung.',
+    groups: { planning: 'Trainingsplanung', training: 'Training und Methoden', body: 'Körper und Regeneration', nutrition: 'Ernährung' },
+    articles: 'Artikel',
   },
   settings: {
     title: 'Einstellungen', language: 'Sprache', units: 'Einheiten', theme: 'Darstellung', system: 'System', light: 'Hell', dark: 'Dunkel',

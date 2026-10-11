@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// Unterpfad für GitHub Pages (z. B. /fit/); lokal und bei eigener Domain "/"
+const base = process.env.VITE_BASE ?? '/'
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     tailwindcss(),
@@ -15,6 +19,8 @@ export default defineConfig({
         short_name: 'Fit',
         description: 'Gym-Tracker mit Wissen und Advisor',
         lang: 'de',
+        start_url: base,
+        scope: base,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#0f1115',

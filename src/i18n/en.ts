@@ -56,12 +56,33 @@ export const en: Dict = {
   },
   more: {
     title: 'More', exercises: 'Exercises', oneRm: '1RM calculator', plates: 'Plate calculator', stopwatch: 'Stopwatch',
-    settings: 'Settings', knowledge: 'Knowledge', advisor: 'Advisor', calculators: 'Tools', about: 'About Fit',
+    settings: 'Settings', knowledge: 'Knowledge', strengthLevel: 'Strength level', energy: 'Energy, macros and heart rate', advisor: 'Advisor', calculators: 'Tools', about: 'About Fit',
   },
   tools: {
     oneRmTitle: '1RM calculator', oneRmHint: 'Enter weight and reps of one set.', est1rm: 'Estimated 1RM', percent: '%',
     platesTitle: 'Plate calculator', target: 'Target weight', bar: 'Bar', perSide: 'Per side', remainder: 'Remainder', exact: 'Exact match',
     stopwatchTitle: 'Stopwatch', start: 'Start', stop: 'Stop', reset: 'Reset', lap: 'Lap',
+  strength: {
+    title: 'Strength level', hint: 'Enter a 1RM or a set (weight and reps) for each lift. The guidelines come from powerlifting data.',
+    sex: 'Sex', male: 'Male', female: 'Female', bodyWeight: 'Body weight', fromBody: 'Taken from your body data',
+    squat: 'Squat', bench: 'Bench press', deadlift: 'Deadlift', press: 'Overhead press', weight: 'Weight', reps: 'Reps', est: '1RM ≈ {{v}} {{unit}}',
+    ratio: '{{r}}× body weight', beginner: 'Beginner', advanced: 'Advanced', pro: 'Pro', next: 'Next level from {{v}} {{unit}}', top: 'Top level reached', none: 'Nothing entered yet',
+  },
+  energy: {
+    title: 'Energy, macros and heart rate', sex: 'Sex', age: 'Age', height: 'Height (cm)', weight: 'Weight', work: 'Work/daily life', sport: 'Sport (hours per week)',
+    sitting: 'Sedentary (office)', mixed: 'Sitting, some walking/standing', standing: 'Mostly walking/standing', heavy: 'Physically demanding',
+    bmr: 'Basal metabolic rate', pal: 'Activity factor (PAL)', total: 'Total need', perDay: 'kcal per day', goal: 'Goal', maintain: 'Maintain weight', lose: 'Lose weight (about −15 %)', gain: 'Gain weight (about +10 %)',
+    target: 'Target', protein: 'Protein', profile: 'Protein need by profile', health: 'Health sport', beginner: 'Strength beginner', advanced: 'Advanced strength', senior: 'Older adults',
+    macros: 'Macronutrients', carbs: 'Carbohydrates', fat: 'Fat', gramsPerDay: 'g per day', bmi: 'BMI', under: 'Underweight', normal: 'Normal weight', over: 'Overweight', obese: 'Obesity',
+    pulse: 'Training heart rate', rest: 'Resting heart rate', intensity: 'Intensity (% HRmax)', hfmax: 'Maximum heart rate (estimated)', hollmann: 'Hollmann', karvonen: 'Karvonen', bpm: 'beats per minute',
+    disclaimer: 'Guidelines, not nutritional or medical advice. Check with a doctor if you have conditions or take medication (e.g. beta blockers).',
+  },
+  },
+  knowledge: {
+    title: 'Knowledge', search: 'Search knowledge', glossary: 'Glossary', glossaryHint: 'Key terms explained', terms: 'terms', empty: 'Nothing found.',
+    notFound: 'Article not found.', tool: 'Related tool', source: 'Summarised in my own words from the fundamentals of training science. Guidelines, not medical advice.',
+    groups: { planning: 'Training planning', training: 'Training and methods', body: 'Body and recovery', nutrition: 'Nutrition' },
+    articles: 'articles',
   },
   settings: {
     title: 'Settings', language: 'Language', units: 'Units', theme: 'Appearance', system: 'System', light: 'Light', dark: 'Dark',

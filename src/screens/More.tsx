@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom'
 
 const ITEMS = [
   { to: '/more/advisor', key: 'advisor', icon: '🧠' },
+  { to: '/more/knowledge', key: 'knowledge', icon: '📚' },
   { to: '/more/exercises', key: 'exercises', icon: '🏋️' },
   { to: '/more/1rm', key: 'oneRm', icon: '🧮' },
+  { to: '/more/strength-level', key: 'strengthLevel', icon: '🏅' },
+  { to: '/more/energy', key: 'energy', icon: '🍽️' },
   { to: '/more/plates', key: 'plates', icon: '⚖️' },
   { to: '/more/stopwatch', key: 'stopwatch', icon: '⏱️' },
   { to: '/more/settings', key: 'settings', icon: '⚙️' },

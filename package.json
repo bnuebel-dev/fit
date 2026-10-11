@@ -8,7 +8,9 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "lint": "tsc -b --noEmit"
+    "lint": "tsc -b --noEmit",
+    "e2e": "npm run build && node e2e/smoke.mjs && node e2e/advisor.mjs && node e2e/knowledge.mjs && node e2e/offline.mjs",
+    "check": "npm run lint && npm test"
   },
   "dependencies": {
     "dexie": "^4.4.6",

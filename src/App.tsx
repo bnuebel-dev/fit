@@ -15,6 +15,8 @@ import { Exercises, ExerciseDetail } from './screens/Exercises'
 import { OneRm, Plates, Stopwatch } from './screens/Tools'
 import { SettingsScreen } from './screens/Settings'
 import { Advisor } from './screens/Advisor'
+import { ArticleView, GlossaryView, Knowledge } from './screens/Knowledge'
+import { Energy, StrengthLevel } from './screens/Health'
 
 export function App() {
   const { i18n } = useTranslation()
@@ -53,6 +55,11 @@ export function App() {
         <Route path="more/stopwatch" element={<Stopwatch />} />
         <Route path="more/settings" element={<SettingsScreen />} />
         <Route path="more/advisor" element={<Advisor />} />
+        <Route path="more/knowledge" element={<Knowledge />} />
+        <Route path="more/knowledge/glossary" element={<GlossaryView />} />
+        <Route path="more/knowledge/:id" element={<ArticleView />} />
+        <Route path="more/strength-level" element={<StrengthLevel />} />
+        <Route path="more/energy" element={<Energy />} />
       </Route>
     </Routes>
   )
