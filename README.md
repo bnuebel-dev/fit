@@ -38,3 +38,12 @@ node scripts/build-exercises.mjs --fedb <free-exercise-db/dist/exercises.json> -
 ```
 
 Plan und Stand: [`docs/PLAN.md`](docs/PLAN.md). Quellen und Lizenzen: [`docs/ATTRIBUTION.md`](docs/ATTRIBUTION.md).
+
+## Android-App mit Health Connect (optional)
+
+Die PWA läuft im Browser. Für den Export in Android Health Connect (damit z. B. Oura Trainings lesen kann) gibt es dieselbe App als Android-App (Capacitor, `android/`, Plugin in `plugins/fit-health/`).
+
+- Der Workflow `.github/workflows/android.yml` baut die APK. Auf `main` landet sie als Release **„android-latest“** (auf dem Handy im Browser öffnen, herunterladen, installieren; „Installation aus unbekannten Quellen“ für den Browser erlauben).
+- Die APK ist mit einem im Repository liegenden Schlüssel signiert, damit neue Versionen als Update über die alte installiert werden. Das ist nur für den privaten Gebrauch gedacht.
+- Die Android-App hat einen eigenen Datenspeicher. Beim Umzug von der PWA: dort „Backup exportieren“, in der Android-App „Backup importieren“.
+- In der Android-App: Einstellungen → Health Connect → verbinden. Danach schreibt Fit jedes beendete Training als Krafttraining samt geschätzter aktiver Kalorien nach Health Connect. Gelesen wird nichts.
