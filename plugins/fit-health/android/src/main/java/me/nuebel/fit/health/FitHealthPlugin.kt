@@ -59,7 +59,7 @@ class FitHealthPlugin : Plugin() {
     }
 
     @PluginMethod
-    fun requestPermissions(call: PluginCall) {
+    fun requestAccess(call: PluginCall) {
         if (availability() != "available") {
             call.reject("Health Connect is not available")
             return

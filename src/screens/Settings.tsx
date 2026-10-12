@@ -36,7 +36,7 @@ function HealthConnectSection() {
   const connect = async () => {
     setMsg('')
     try {
-      const r = await FitHealth.requestPermissions()
+      const r = await FitHealth.requestAccess()
       await saveSettings({ healthSync: r.granted })
       setMsg(r.granted ? t('health.connected') : t('health.denied'))
       await refresh()

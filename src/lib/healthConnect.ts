@@ -8,7 +8,7 @@ export type Availability = 'available' | 'update-required' | 'unavailable'
 
 interface FitHealthPlugin {
   status(): Promise<{ availability: Availability; granted: boolean }>
-  requestPermissions(): Promise<{ granted: boolean }>
+  requestAccess(): Promise<{ granted: boolean }>
   writeWorkout(o: { id: string; title: string; start: number; end: number; kcal: number }): Promise<void>
   openSettings(): Promise<void>
 }
