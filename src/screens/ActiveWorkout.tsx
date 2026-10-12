@@ -13,6 +13,7 @@ import { exName } from '../lib/names'
 import { useRest } from '../lib/restTimer'
 import { useSettings } from '../lib/settings'
 import { useExerciseMap } from '../lib/useExercises'
+import { syncAfterFinish } from '../lib/healthConnect'
 import { addExercise, addSet, addWarmups, bestE1rm, discardWorkout, finishWorkout, getActiveWorkout, previousSets, removeExercise, type Summary } from '../lib/workout'
 import type { Exercise, SetLog, SetType, Units, Workout, WorkoutItem } from '../types'
 
@@ -38,7 +39,10 @@ export function ActiveWorkout() {
   const finish = async () => {
     const res = await finishWorkout(active.id!)
     useRest.getState().stop()
-    if (res) setSummary(res)
+    if (res) {
+      void syncAfterFinish(res.workoutId)
+      setSummary(res)
+    }
     else {
       alert(t('workout.noSets'))
       nav('/', { replace: true })

@@ -113,4 +113,6 @@ export interface Settings {
   advisorModel: string
   /** Trainings pro Woche, die das Wochenziel ausmachen */
   weeklyGoal: number
+  /** beendete Trainings automatisch an Android Health Connect senden (nur in der Android-App) */
+  healthSync: boolean
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { bodyKgAt, DEFAULT_BODY_KG, metForDensity, workoutKcal } from './calories'
 import { monthGrid, weekStreak, weeklyCounts } from './streak'
 import { warmupRamp } from './warmup'
+import { healthPayload } from './healthConnect'
 import { weekStart } from './stats'
 
 const DAY = 86400000
@@ -65,5 +66,19 @@ describe('Serie und Kalender', () => {
     expect(g.every((r) => r.length === 7)).toBe(true)
     expect(g[0].indexOf(1)).toBe(3)
     expect(g.flat().filter(Boolean)).toHaveLength(31)
+  })
+})
+
+describe('Health-Connect-Daten', () => {
+  const w = { id: 7, name: 'Push', startedAt: MON, endedAt: MON + 3600000, items: [] }
+  const s = (done: 0 | 1, type: 'normal' | 'warmup' = 'normal') => ({ workoutId: 7, exerciseId: 'a', order: 0, weight: 50, reps: 8, type, done })
+  it('Zeitraum, Titel und geschätzte Kalorien (12 Arbeitssätze in 60 min bei 80 kg = 280)', () => {
+    const sets = [...Array.from({ length: 12 }, () => s(1)), s(1, 'warmup'), s(0)]
+    expect(healthPayload(w, sets, [{ date: '2026-10-01', values: { weight: 80 } }], 'Fit')).toEqual({ id: '7', title: 'Push', start: MON, end: MON + 3600000, kcal: 280 })
+  })
+  it('Ersatztitel, und nichts für laufende Einheiten', () => {
+    expect(healthPayload({ ...w, name: '' }, [s(1)], [], 'Fit')?.title).toBe('Fit')
+    expect(healthPayload({ ...w, endedAt: undefined }, [], [], 'Fit')).toBeNull()
+    expect(healthPayload({ ...w, endedAt: w.startedAt }, [], [], 'Fit')).toBeNull()
   })
 })

@@ -10,11 +10,15 @@
     "test": "vitest run",
     "lint": "tsc -b --noEmit",
     "e2e": "npm run build && node e2e/smoke.mjs && node e2e/advisor.mjs && node e2e/insights.mjs && node e2e/knowledge.mjs && node e2e/offline.mjs",
-    "check": "npm run lint && npm test"
+    "check": "npm run lint && npm test",
+    "android:sync": "npm run build && cap sync android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
     "dexie": "^4.4.6",
     "dexie-react-hooks": "^4.4.0",
+    "fit-health": "file:plugins/fit-health",
     "i18next": "^26.4.3",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -24,6 +28,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.3",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
