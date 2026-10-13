@@ -7,6 +7,7 @@ import androidx.health.connect.client.PermissionController
 import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.ActiveCaloriesBurnedRecord
 import androidx.health.connect.client.records.ExerciseSessionRecord
+import androidx.health.connect.client.records.metadata.Device
 import androidx.health.connect.client.records.metadata.Metadata
 import androidx.health.connect.client.units.Energy
 import com.getcapacitor.JSObject
@@ -51,9 +52,11 @@ class FitHealthPlugin : Plugin() {
         scope.launch {
             try {
                 val granted = HealthConnectClient.getOrCreate(context).permissionController.getGrantedPermissions()
-                call.resolve(result.put("granted", granted.containsAll(writePermissions)))
-            } catch (e: Exception) {
-                call.reject(e.message ?: "status failed", e)
+                result.put("granted", granted.containsAll(writePermissions))
+                result.put("grantedList", granted.joinToString(", ") { it.substringAfterLast('.') })
+                call.resolve(result)
+            } catch (e: Throwable) {
+                call.reject("${e.javaClass.simpleName}: ${e.message}", e as? Exception)
             }
         }
     }
@@ -75,8 +78,8 @@ class FitHealthPlugin : Plugin() {
             try {
                 val granted = HealthConnectClient.getOrCreate(context).permissionController.getGrantedPermissions()
                 call.resolve(JSObject().put("granted", granted.containsAll(writePermissions)))
-            } catch (e: Exception) {
-                call.reject(e.message ?: "permission check failed", e)
+            } catch (e: Throwable) {
+                call.reject("${e.javaClass.simpleName}: ${e.message}", e as? Exception)
             }
         }
     }
@@ -105,7 +108,7 @@ class FitHealthPlugin : Plugin() {
                 val records = mutableListOf<androidx.health.connect.client.records.Record>(
                     ExerciseSessionRecord(
                         startTime = startAt, startZoneOffset = offset, endTime = endAt, endZoneOffset = offset,
-                        metadata = Metadata.manualEntry(clientRecordId = "fit-$id", clientRecordVersion = version),
+                        metadata = Metadata.activelyRecorded(device = Device(type = Device.TYPE_PHONE), clientRecordId = "fit-$id", clientRecordVersion = version),
                         exerciseType = ExerciseSessionRecord.EXERCISE_TYPE_STRENGTH_TRAINING,
                         title = title,
                     ),
@@ -115,14 +118,14 @@ class FitHealthPlugin : Plugin() {
                         ActiveCaloriesBurnedRecord(
                             startTime = startAt, startZoneOffset = offset, endTime = endAt, endZoneOffset = offset,
                             energy = Energy.kilocalories(kcal),
-                            metadata = Metadata.manualEntry(clientRecordId = "fit-$id-kcal", clientRecordVersion = version),
+                            metadata = Metadata.activelyRecorded(device = Device(type = Device.TYPE_PHONE), clientRecordId = "fit-$id-kcal", clientRecordVersion = version),
                         ),
                     )
                 }
                 HealthConnectClient.getOrCreate(context).insertRecords(records)
                 call.resolve()
-            } catch (e: Exception) {
-                call.reject(e.message ?: "write failed", e)
+            } catch (e: Throwable) {
+                call.reject("${e.javaClass.simpleName}: ${e.message}", e as? Exception)
             }
         }
     }

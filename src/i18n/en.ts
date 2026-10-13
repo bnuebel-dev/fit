@@ -58,6 +58,8 @@ export const en: Dict = {
     connect: 'Connect to Health Connect', connected: 'Connected. New workouts are sent automatically.', denied: 'Access not granted.', auto: 'Send workouts automatically',
     sendRecent: 'Send the last 30 days now', sent_one: '{{count}} workout sent.', sent_other: '{{count}} workouts sent.', open: 'Open Health Connect',
     lastOk: 'Last sent: {{when}}', lastError: 'Last attempt failed: {{error}}',
+    sendTest: 'Send test entry (10 min)', testSent: 'Test entry sent. Check Health Connect under “Data and access” → Exercise.', testFailed: 'Sending failed', granted: 'Granted permissions',
+    skipped_off: 'Last workout not sent: automatic sending is off.', skipped_not_connected: 'Last workout not sent: Health Connect is not connected.',
     note: 'Calories are an estimate from duration, set density and body weight. A workout that is sent again is updated, not duplicated.',
   },
   insights: {
