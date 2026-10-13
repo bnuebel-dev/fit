@@ -56,6 +56,8 @@ export const de = {
     connect: 'Mit Health Connect verbinden', connected: 'Verbunden. Neue Trainings werden automatisch gesendet.', denied: 'Zugriff nicht erteilt.', auto: 'Trainings automatisch senden',
     sendRecent: 'Letzte 30 Tage jetzt senden', sent_one: '{{count}} Training gesendet.', sent_other: '{{count}} Trainings gesendet.', open: 'Health Connect öffnen',
     lastOk: 'Zuletzt gesendet: {{when}}', lastError: 'Letzter Versuch fehlgeschlagen: {{error}}',
+    sendTest: 'Test-Eintrag senden (10 Min.)', testSent: 'Test-Eintrag gesendet. Prüfe in Health Connect unter „Daten und Zugriff“ → Training.', testFailed: 'Senden fehlgeschlagen', granted: 'Erteilte Rechte',
+    skipped_off: 'Letztes Training nicht gesendet: automatisches Senden ist aus.', skipped_not_connected: 'Letztes Training nicht gesendet: Health Connect ist nicht verbunden.',
     note: 'Die Kalorien sind eine Schätzung aus Dauer, Satzdichte und Körpergewicht. Ein erneut gesendetes Training wird aktualisiert, nicht verdoppelt.',
   },
   insights: {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { db, exportBackup, importBackup, type BackupFile } from '../db'
 import { NumField } from '../components/NumField'
-import { FitHealth, isNativeApp, syncRecent, type Availability, type SyncStatus } from '../lib/healthConnect'
+import { FitHealth, isNativeApp, sendTestWorkout, syncRecent, type Availability, type SyncStatus } from '../lib/healthConnect'
 import { saveSettings, useSettings } from '../lib/settings'
 import type { Lang, Theme, Units } from '../types'
 
@@ -25,7 +25,7 @@ function HealthConnectSection() {
   const { t } = useTranslation()
   const s = useSettings()
   const status = useLiveQuery(async () => (await db.kv.get('healthSyncStatus'))?.value as SyncStatus | undefined, [])
-  const [info, setInfo] = useState<{ availability: Availability; granted: boolean } | null>(null)
+  const [info, setInfo] = useState<{ availability: Availability; granted: boolean; grantedList?: string } | null>(null)
   const [msg, setMsg] = useState('')
   const native = isNativeApp()
   const refresh = () => FitHealth.status().then(setInfo).catch((e: Error) => setMsg(e.message))
@@ -46,6 +46,10 @@ function HealthConnectSection() {
     setMsg('')
     try { setMsg(t('health.sent', { count: await syncRecent(30) })) } catch (e) { setMsg((e as Error).message) }
   }
+  const sendTest = async () => {
+    setMsg('')
+    try { await sendTestWorkout(); setMsg(t('health.testSent')) } catch (e) { setMsg(`${t('health.testFailed')}: ${(e as Error).message}`) }
+  }
   const state = info?.availability === 'unavailable' ? t('health.unavailable') : info?.availability === 'update-required' ? t('health.update') : info?.granted ? t('health.on') : t('health.off')
 
   return (
@@ -59,10 +63,12 @@ function HealthConnectSection() {
             <input type="checkbox" className="size-6 accent-[var(--color-accent)]" checked={s.healthSync} onChange={(e) => void saveSettings({ healthSync: e.target.checked })} />
           </label>
           <button className="btn" onClick={sendRecent}>{t('health.sendRecent')}</button>
+          <button className="btn" onClick={sendTest}>{t('health.sendTest')}</button>
         </>
       )}
       <button className="btn" onClick={() => void FitHealth.openSettings().catch((e: Error) => setMsg(e.message))}>{t('health.open')}</button>
-      {status && <p className="text-xs text-muted">{status.ok ? t('health.lastOk', { when: new Date(status.at).toLocaleString() }) : t('health.lastError', { error: status.error })}</p>}
+      {info?.grantedList !== undefined && <p className="break-words text-xs text-muted">{t('health.granted')}: {info.grantedList || '–'}</p>}
+      {status && <p className="break-words text-xs text-muted">{status.ok ? t('health.lastOk', { when: new Date(status.at).toLocaleString() }) : status.skipped ? t(`health.skipped_${status.skipped.replace('-', '_')}`) : t('health.lastError', { error: status.error })}</p>}
       {msg && <p role="status" className="text-sm text-muted">{msg}</p>}
       <p className="text-xs text-muted">{t('health.note')}</p>
     </section>

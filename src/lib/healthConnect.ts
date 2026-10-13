@@ -7,7 +7,7 @@ import type { SetLog, Workout, BodyEntry } from '../types'
 export type Availability = 'available' | 'update-required' | 'unavailable'
 
 interface FitHealthPlugin {
-  status(): Promise<{ availability: Availability; granted: boolean }>
+  status(): Promise<{ availability: Availability; granted: boolean; grantedList?: string }>
   requestAccess(): Promise<{ granted: boolean }>
   writeWorkout(o: { id: string; title: string; start: number; end: number; kcal: number }): Promise<void>
   openSettings(): Promise<void>
@@ -32,16 +32,21 @@ export function healthPayload(w: Workout, sets: SetLog[], body: BodyEntry[], fal
   }
 }
 
-/** Sendet ein abgeschlossenes Training an Health Connect. Gibt false zurück, wenn es nichts zu senden gab oder die Sync aus ist. */
-export async function syncWorkout(workoutId: number, opts: { force?: boolean } = {}): Promise<boolean> {
-  if (!isNativeApp()) return false
-  if (!opts.force && !(await loadSettings()).healthSync) return false
+export type SyncSkip = 'off' | 'not-connected'
+export interface SyncResult { sent: boolean; skipped?: SyncSkip }
+
+/** Sendet ein abgeschlossenes Training an Health Connect. Mit `force` auch bei ausgeschalteter automatischer Sync. */
+export async function syncWorkout(workoutId: number, opts: { force?: boolean } = {}): Promise<SyncResult> {
+  if (!isNativeApp()) return { sent: false }
+  if (!opts.force && !(await loadSettings()).healthSync) return { sent: false, skipped: 'off' }
+  const st = await FitHealth.status()
+  if (st.availability !== 'available' || !st.granted) return { sent: false, skipped: 'not-connected' }
   const w = await db.workouts.get(workoutId)
-  if (!w) return false
+  if (!w) return { sent: false }
   const payload = healthPayload(w, await db.sets.where('workoutId').equals(workoutId).toArray(), await db.body.toArray(), 'Fit')
-  if (!payload) return false
+  if (!payload) return { sent: false }
   await FitHealth.writeWorkout(payload)
-  return true
+  return { sent: true }
 }
 
 /** Sendet alle abgeschlossenen Trainings der letzten `days` Tage erneut (aktualisiert statt zu verdoppeln). */
@@ -49,17 +54,26 @@ export async function syncRecent(days: number): Promise<number> {
   const since = Date.now() - days * 86400000
   const list = (await db.workouts.where('startedAt').aboveOrEqual(since).toArray()).filter((w) => w.endedAt !== undefined)
   let n = 0
-  for (const w of list) if (await syncWorkout(w.id!, { force: true })) n++
+  for (const w of list) if ((await syncWorkout(w.id!, { force: true })).sent) n++
   return n
 }
 
-export interface SyncStatus { at: number; ok: boolean; error?: string }
+/** Schreibt einen 10-Minuten-Testeintrag (Ende = jetzt), um den Weg bis Health Connect zu prüfen. */
+export async function sendTestWorkout(): Promise<void> {
+  const end = Date.now()
+  await FitHealth.writeWorkout({ id: `test-${end}`, title: 'Fit Test', start: end - 10 * 60000, end, kcal: 40 })
+}
+
+export interface SyncStatus { at: number; ok: boolean; error?: string; skipped?: SyncSkip }
 
 /** Nach dem Beenden eines Trainings: senden und das Ergebnis für die Einstellungen merken. Wirft nie. */
 export async function syncAfterFinish(workoutId: number): Promise<void> {
+  if (!isNativeApp()) return
+  const put = (v: SyncStatus) => db.kv.put({ key: 'healthSyncStatus', value: v })
   try {
-    if (await syncWorkout(workoutId)) await db.kv.put({ key: 'healthSyncStatus', value: { at: Date.now(), ok: true } satisfies SyncStatus })
+    const r = await syncWorkout(workoutId)
+    await put({ at: Date.now(), ok: r.sent, ...(r.skipped ? { skipped: r.skipped } : {}) })
   } catch (e) {
-    await db.kv.put({ key: 'healthSyncStatus', value: { at: Date.now(), ok: false, error: e instanceof Error ? e.message : String(e) } satisfies SyncStatus })
+    await put({ at: Date.now(), ok: false, error: e instanceof Error ? e.message : String(e) })
   }
 }
