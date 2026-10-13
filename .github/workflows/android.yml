@@ -1,0 +1,60 @@
+name: Android-App
+
+# Baut die Web-App als Android-App (Capacitor). Auf main wird die APK als Release "android-latest" veröffentlicht,
+# auf anderen Branches nur als Build-Artefakt zum Prüfen.
+on:
+  push:
+    paths:
+      - 'android/**'
+      - 'plugins/**'
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'capacitor.config.ts'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npx tsc -p . --noEmit
+      - run: npm test
+      - run: npm run build
+        env:
+          VITE_BASE: /
+      - run: npx cap sync android
+      - name: APK bauen
+        working-directory: android
+        run: ./gradlew assembleDebug -PversionCode=${{ github.run_number }} -PversionName=1.0.${{ github.run_number }}
+      - name: APK umbenennen
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk fit.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fit-apk
+          path: fit.apk
+      - name: Als Release veröffentlichen (nur main)
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete android-latest --yes --cleanup-tag || true
+          gh release create android-latest fit.apk --prerelease --title "Fit für Android (Build ${{ github.run_number }})" \
+            --notes "Debug-signierte APK zum direkten Installieren. Version 1.0.${{ github.run_number }}, Stand ${{ github.sha }}."

@@ -49,6 +49,15 @@ export const de = {
     volume: 'Volumen', sets: 'Sätze', reps: 'Wdh.', avg: 'Ø', max: 'Max', sum: 'Summe', trend: 'Trend', muscles: 'Muskelverteilung',
     volumeOverTime: 'Volumen pro Woche', records: 'Rekorde', noData: 'Im Zeitraum keine Trainings.',
   },
+  health: {
+    title: 'Health Connect', webOnly: 'Nur in der Android-App verfügbar. Dort sendet Fit beendete Trainings an Health Connect, damit Apps wie Oura sie lesen können.',
+    hint: 'Fit schreibt beendete Trainings (Zeitraum, Titel, geschätzte aktive Kalorien) nach Health Connect. Fit liest nichts daraus.',
+    state: 'Status', unavailable: 'Health Connect ist auf diesem Gerät nicht verfügbar', update: 'Health Connect muss erst aktualisiert werden (Play Store)', on: 'Verbunden', off: 'Nicht verbunden',
+    connect: 'Mit Health Connect verbinden', connected: 'Verbunden. Neue Trainings werden automatisch gesendet.', denied: 'Zugriff nicht erteilt.', auto: 'Trainings automatisch senden',
+    sendRecent: 'Letzte 30 Tage jetzt senden', sent_one: '{{count}} Training gesendet.', sent_other: '{{count}} Trainings gesendet.', open: 'Health Connect öffnen',
+    lastOk: 'Zuletzt gesendet: {{when}}', lastError: 'Letzter Versuch fehlgeschlagen: {{error}}',
+    note: 'Die Kalorien sind eine Schätzung aus Dauer, Satzdichte und Körpergewicht. Ein erneut gesendetes Training wird aktualisiert, nicht verdoppelt.',
+  },
   insights: {
     kcal: 'Verbrauch (geschätzt, kcal)', kcalNote: 'Schätzung aus Dauer, Satzdichte und Körpergewicht (MET-Werte). Ohne Messung per Pulsuhr nur ein Richtwert.',
     kcalPerWeek: 'Geschätzter Verbrauch pro Woche (kcal)',

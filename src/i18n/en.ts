@@ -51,6 +51,15 @@ export const en: Dict = {
     volume: 'Volume', sets: 'Sets', reps: 'Reps', avg: 'Avg', max: 'Max', sum: 'Total', trend: 'Trend', muscles: 'Muscle distribution',
     volumeOverTime: 'Volume per week', records: 'Records', noData: 'No workouts in this period.',
   },
+  health: {
+    title: 'Health Connect', webOnly: 'Only available in the Android app. There Fit sends finished workouts to Health Connect so apps like Oura can read them.',
+    hint: 'Fit writes finished workouts (time span, title, estimated active calories) to Health Connect. It reads nothing from it.',
+    state: 'Status', unavailable: 'Health Connect is not available on this device', update: 'Health Connect needs an update first (Play Store)', on: 'Connected', off: 'Not connected',
+    connect: 'Connect to Health Connect', connected: 'Connected. New workouts are sent automatically.', denied: 'Access not granted.', auto: 'Send workouts automatically',
+    sendRecent: 'Send the last 30 days now', sent_one: '{{count}} workout sent.', sent_other: '{{count}} workouts sent.', open: 'Open Health Connect',
+    lastOk: 'Last sent: {{when}}', lastError: 'Last attempt failed: {{error}}',
+    note: 'Calories are an estimate from duration, set density and body weight. A workout that is sent again is updated, not duplicated.',
+  },
   insights: {
     kcal: 'Burn (estimated, kcal)', kcalNote: 'Estimated from duration, set density and body weight (MET values). Without a heart-rate measurement it is only a rough guide.',
     kcalPerWeek: 'Estimated burn per week (kcal)',

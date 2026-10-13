@@ -1,0 +1,12 @@
+{
+  "name": "fit-health",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Schreibt Trainings als Übungseinheit samt aktiver Kalorien nach Android Health Connect.",
+  "license": "UNLICENSED",
+  "capacitor": {
+    "android": {
+      "src": "android"
+    }
+  }
+}
