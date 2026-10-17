@@ -197,10 +197,32 @@ g2/
 
 Grundsätze: ein serieller Render-Kanal (Queue mit Timeout), `createStartUpPageContainer` exakt einmal (Flag auch bei Fehlschlag setzen), Rückgabewerte prüfen, Layouts mit `@evenrealities/pretext` vermessen, Logik vom Rendering trennen, Simulator-Automations-API (`--automation-port`, Screenshot 576x288) für Tests nutzen, vor jedem Release auf echter Hardware prüfen.
 
+## 12. Machbarkeit: Chat mit OpenRouter-Modellen
+
+Geprüft am 17.10.2026. `openrouter.ai` selbst war aus der Umgebung nicht erreichbar, belegt ist alles über das offizielle npm-Paket `@openrouter/sdk` 1.4.25 (Typen), Community-Apps und eine Modellliste von GitHub.
+
+**Ergebnis: machbar.** Die Brille liefert das Mikrofon, OpenRouter nimmt Audio entgegen, und es gibt Apps, die genau diesen Aufbau schon nutzen.
+
+Belegt:
+- **Audio an OpenRouter, Weg A (Spracherkennung):** `POST https://openrouter.ai/api/v1/audio/transcriptions` mit JSON `{ model, input_audio: { data: <base64>, format } }` oder als Datei-Upload (max. 25 MB). Das Format `"pcm"` bedeutet laut SDK-Typen ausdrücklich headerloses signed 16-Bit little-endian mono bei 16 kHz. Das ist exakt das Mikrofonformat der G2. Es muss also kein WAV-Header gebaut werden. Antwort: `{ text, usage }`. Whisper-Modelle (`openai/whisper-1`, `whisper-large-v3`, `whisper-large-v3-turbo`) werden dort laut einer Suchtreffer-Zusammenfassung angeboten (Modell-IDs vor Gebrauch prüfen).
+- **Audio an OpenRouter, Weg B (Chat-Modell hört direkt zu):** `POST /api/v1/chat/completions` mit Inhaltsteil `{ type: "input_audio", input_audio: { data, format } }`. Formate laut Typen: wav, mp3, flac, m4a, ogg, aiff, aac, pcm16, pcm24, je nach Anbieter. Eine Community-Liste (Stand 17.04.2026) nennt als audiofähig u. a. `google/gemini-2.5-flash`, `google/gemini-2.0-flash-001`, `google/gemini-3-flash-preview`, `mistralai/voxtral-small-24b-2507`, `openai/gpt-audio`, `openai/gpt-audio-mini`, `openai/gpt-4o-audio-preview`. Nicht jedes Chat-Modell kann Audio. Für die freie Modellwahl ist Weg A darum besser: erst Text per Spracherkennung, dann an jedes beliebige Modell.
+- **Aufbau schon erprobt:** Die App Cue (`tntpsu/Cue`) ruft aus dem gepackten Plugin direkt `api.deepgram.com`, `api.anthropic.com` und `api.openai.com` auf, mit Schlüsseln, die der Nutzer auf dem Handy einträgt (Speicher des SDK). Die Netzwerk-Whitelist ist eine statische Liste exakter Ursprünge, die beim Packen feststeht. `https://openrouter.ai` ist für alle Nutzer derselbe Ursprung und damit unproblematisch. Andere Apps kombinieren Brillen-Mikrofon mit Spracherkennung (`stt-even-g2` mit Soniox) oder mit OpenAI-kompatiblen Chat-Endpunkten (`g2-caduceus`).
+
+Nicht belegt, früh mit einem kleinen Test klären:
+1. **CORS von `openrouter.ai`:** Das SDK nennt Browser als unterstützte Umgebung, das spricht dafür. Ein Beleg der Antwort-Header fehlt. Test von einem Rechner aus:
+   `curl -i -X OPTIONS https://openrouter.ai/api/v1/chat/completions -H "Origin: https://example.com" -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: authorization,content-type"`
+   In der Antwort muss `Access-Control-Allow-Origin` stehen. Fehlt es, hilft ein eigener Proxy (Cloudflare Worker), dessen Adresse dann aber in der Whitelist fest stehen muss.
+2. **Gestreamte Antwort in der Even-WebView:** `fetch` mit `ReadableStream` (SSE) ist nicht belegt. Rückfall: Antwort am Stück holen.
+3. **Modell-IDs und Preise:** Direkt von `GET /api/v1/models` laden, die Listen oben veralten.
+4. **Echte Wartezeit:** Aufnahme, Erkennung, Modell und Funkstrecke zusammen sind nicht gemessen.
+
+Entwurf des Ablaufs: Tippen startet die Aufnahme (`audioControl(true, Glasses)`, 10-ms-Frames puffern, Frames zusammenfügen), erneutes Tippen beendet sie, dann Spracherkennung, Chat-Anfrage mit gewähltem Modell, Antwort seitenweise (ca. 400 bis 500 Zeichen) anzeigen, Updates zusammenfassen statt pro Token zu senden. Modelle und Schlüssel werden auf dem Handy gewählt, der Verlauf liegt im SDK-Speicher. Systemprompt: kurz, Klartext, keine Formatierung, keine Emojis.
+
 ## Quellen
 
 - npm: `@evenrealities/even_hub_sdk`, `@evenrealities/evenhub-cli`, `@evenrealities/evenhub-simulator`, `@evenrealities/pretext` (README, Typen, Changelogs)
 - github.com/even-realities/evenhub-templates, github.com/even-realities/everything-evenhub (Skills)
 - github.com/nickustinov/even-g2-notes, github.com/aleapc/even-hub-devguide
 - github.com/pangoleen/awesome-even-realities-g2, github.com/Alireza29675/hevy-g2, github.com/fabioglimb/even-workout, github.com/fabioglimb/even-toolkit
-- Nicht erreichbar, aber maßgeblich: hub.evenrealities.com/docs
+- npm: `@openrouter/sdk` (Typen für Audio und Spracherkennung), github.com/tntpsu/Cue, github.com/nickustinov/stt-even-g2, github.com/danielrosehill/Voxtype (Liste audiofähiger Modelle)
+- Nicht erreichbar, aber maßgeblich: hub.evenrealities.com/docs und openrouter.ai/docs
