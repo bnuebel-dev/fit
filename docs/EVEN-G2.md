@@ -166,15 +166,19 @@ Nicht vorhanden: Audioausgabe, Kamera auf der Brille, freies Pixelzeichnen, Schr
 5. **Plattform:** Eine Quelle nennt nur iPhone (Flutter-WebView), der offizielle Skill erwähnt auch Android (Chromium). Vor dem Bau klären, welches Handy und welche Even-App-Version vorhanden ist.
 6. **Veröffentlichung:** Eine Quelle nennt das Portal als „noch nicht verfügbar“, aktuelle Quellen beschreiben Upload, Beta-Tester und Review. Aktueller Stand im Portal prüfen.
 
-## 10. Bezug zur Fit-App in diesem Repo
+## 10. Wofür sich die Brille eignet
 
-Fit ist ein Gym-Tracker (React, Dexie/IndexedDB, Capacitor). Für die Brille ist das ein naheliegender Fall: ein „Live-Training“-Begleiter.
+Der Anwendungsfall ist noch offen und wird vom Nutzer festgelegt. Aus den Grenzen oben folgt, was gut passt: kurze, lesbare Informationen im Alltag, bedient mit wenigen Gesten, ohne dass man das Handy herausholen muss.
 
-- Referenzen: `Alireza29675/hevy-g2` (Satz-Anzeige, ein Tipp = Satz fertig, Supersatz-Reihenfolge, Zähl-Timer), `fabioglimb/even-workout` (Routinenliste, Pausentimer, Fortschrittsbalken, Verlauf), `r-castelo/G2_Gym_App`.
-- Datenfluss: Die G2-App ist eine eigene Web-App und kann **nicht** auf die IndexedDB der Fit-PWA zugreifen (eigene Origin, eigener Speicher). Optionen: Routinen per JSON-Export/Import in den Bridge-Speicher laden (offline, einfach), oder gemeinsamer Backend-Dienst (mehr Aufwand, Datenschutz-Abwägung, da Fit bewusst lokal bleibt). Empfehlung: erst Export/Import.
-- Vorschlag Bildschirme: Routinenliste (Listen-Container) → Übung/Satz mit Zielgewicht und Wiederholungen plus Vorwert (Text, 2 Container) → Pausentimer per `textContainerUpgrade` jede Sekunde → Zusammenfassung. Tippen = Satz erledigt, Wischen = Gewicht/Wiederholungen anpassen, Doppeltippen = zurück bzw. auf Startseite Exit-Dialog.
-- Rückweg: Ergebnisse im Bridge-Speicher sammeln und in Fit per Import übernehmen.
-- Übungsbilder und Muskelgrafiken eignen sich wegen der 16 Grünstufen und der niedrigen Bildrate nur als kleine Piktogramme (z. B. 96 x 96, vorab auf 4 Bit gerastert).
+Gut geeignet laut den gesichteten Community-Apps:
+- Glance-Anzeigen: Termine, Aufgaben, Wetter, Uhr, Nachrichten, Abfahrtszeiten, Kurse
+- Lesen: Notizen, Artikel, E-Books, Teleprompter mit viel Text, seitenweise mit Tippen oder Wischen
+- Sprache über das Mikrofon: Live-Untertitel, Übersetzung, Diktat, Sprachnotizen (Spracherkennung muss selbst angebunden werden, z. B. Deepgram, Soniox, Whisper)
+- Anbindung an Dienste und Zuhause: Smart Home, Fahrzeugstatus, Chat-Postfach, Entwickler-Tools
+
+Schlecht geeignet: alles mit schneller Grafik oder Animation (ca. 5 bis 9 Bilder pro Sekunde), farbigen oder bildlastigen Oberflächen, Texteingabe per Tastatur, Hintergrundaufgaben ohne geöffnete App (Erinnerungen, Alarme) und alles, was Ton ausgeben soll.
+
+Daten: Eine G2-App hat eigenen Speicher und kann nicht auf die Daten anderer Web-Apps (etwa der Fit-PWA) zugreifen. Quellen laufen über erlaubte Web-Schnittstellen (mit CORS), einen eigenen Backend-Dienst oder Import/Export.
 
 ## 11. Empfohlene Projektstruktur für die Umsetzung
 
