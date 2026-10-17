@@ -63,9 +63,9 @@ Developer Mode in der Even-App: laut Community die App-Version im About-Screen 7
 
 ```json
 {
-  "package_id": "com.example.fitglass",
+  "package_id": "com.example.meineapp",
   "edition": "202601",
-  "name": "Fit Glass",
+  "name": "Meine App",
   "version": "0.1.0",
   "min_app_version": "2.2.10",
   "min_sdk_version": "0.0.16",
